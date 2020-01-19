@@ -62,10 +62,11 @@ const
 
   lsv =()=> ls.state? +ls.state.match(/"v":(\d+)/)[1] : 0,
 
-  buildTaskEl =({id, name})=> {
+  buildTaskEl =({id, name, done})=> {
     task.innerText = name
     const clone = template.cloneNode(2)
     clone.id = id
+    if (done) clone.classList.add('done')
     return clone
   },
 
@@ -82,8 +83,23 @@ const
   },
 
   delTask = el => {
-    updState(()=>
-      state.tasks = state.tasks.filter(task => task.id != el.parentNode.id))
+    const id = el.parentNode.id
+    updState(()=> state.tasks = state.tasks.filter(task => task.id!=id))
+  },
+
+  markTask = el => {
+    const id = el.parentNode.id,
+          done = el.parentNode.classList.contains('done')
+    updState(()=> (state.tasks.find(task => task.id==id).done = !done, 1))
+  },
+
+  updTask = el => {
+    const id = el.parentNode.id,  name = el.innerText
+    updState(()=> (state.tasks.find(task => task.id==id).name = name, 1))
+  },
+
+  blurTask = e => {
+    if (e.key=='Enter') e.target.blur()
   },
 
   memoVal = (el, val) => updState(()=>

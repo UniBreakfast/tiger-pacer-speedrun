@@ -3,11 +3,12 @@ body, input, button {
 }
 
 body {
-  margin-top: 3rem;
+  padding: 3rem;
 }
 
 ul {
   list-style: none;
+  padding: 0;
 }
 
 #templates {
@@ -16,6 +17,8 @@ ul {
 
 #input {
   margin-left: 2rem;
+  border: .1rem solid;
+  border-radius: .4rem;
 }
 
 #view>button, #tasks>li>button {
@@ -25,5 +28,17 @@ ul {
 
 #tasks>li>button {
   font-size: .8rem;
-  transform: translateY(-.1rem);
+  transform: translateY(-.2rem);
+  padding-bottom: .2rem;
+}
+
+#tasks>li>button:first-child {
+  visibility: hidden;
+}
+#tasks>li.done>button, #tasks>li:hover>button {
+  visibility: unset;
+}
+#tasks>li.done>span {
+  text-decoration: line-through;
+  text-decoration-color: #0909;
 }
