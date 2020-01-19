@@ -1,7 +1,29 @@
+body, input, button {
+  font: 1.5rem Trebuchet MS, Helvetica, Arial, sans-serif;
+}
+
+body {
+  margin-top: 3rem;
+}
+
 ul {
   list-style: none;
 }
 
 #templates {
   display: none;
+}
+
+#input {
+  margin-left: 2rem;
+}
+
+#view>button, #tasks>li>button {
+  border: none;
+  cursor: pointer;
+}
+
+#tasks>li>button {
+  font-size: .8rem;
+  transform: translateY(-.1rem);
 }

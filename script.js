@@ -1,4 +1,7 @@
-HTMLInputElement.prototype.clear = function () { this.value = '' }
+HTMLElement.prototype.clear = function () {
+  if (this.value) this.value = ''
+  if (this.innerHTML) this.innerHTML = ''
+}
 
 const
   c = console.log,  ls = localStorage,
@@ -28,7 +31,7 @@ const
       clearTimeout(cancel.timer), fn(...args)
     }
     const cancel =()=> clearTimeout(cancel.timer)
-    return [throttled, immediate, cancel]
+    return [throttled, cancel, immediate]
   },
 
   syncStoreOnce =()=> {
@@ -40,13 +43,6 @@ const
 
   [ syncStore, stopSyncStore ] = makeRepeatable(syncStoreOnce, SYNC_LS_INTER),
 
-  updState = queryFn => {
-    syncStoreOnce()
-    if (queryFn()) ++state.v
-    syncView()
-    syncStore()
-  },
-
   syncViewOnce =()=> {
     if (view.v==state.v) return
     input.value = state.input
@@ -56,6 +52,13 @@ const
   },
 
   [ syncView, stopSyncView ] = makeRepeatable(syncViewOnce, SYNC_VIEW_INTER),
+
+  updState = queryFn => {
+    syncStoreOnce()
+    if (queryFn()) ++state.v
+    syncView()
+    syncStore()
+  },
 
   lsv =()=> ls.state? +ls.state.match(/"v":(\d+)/)[1] : 0,
 
@@ -86,10 +89,9 @@ const
   memoVal = (el, val) => updState(()=>
     (state[el.id] = val!=undefined? val : el.value, 1)),
 
-  [ memo, memoNow, memoNot ] = makeThrottled(memoVal, MEMO_THROTTLE)
+  [ memo, memoNot, memoNow ] = makeThrottled(memoVal, MEMO_THROTTLE)
+
 
 let state = { v: 0, input: '', tasks: [], id: 0 }
-
-tasks.clear =()=> tasks.innerHTML=''
 
 syncStore(), syncView()
