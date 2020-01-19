@@ -22,6 +22,7 @@ ul {
 }
 
 #view>button, #tasks>li>button {
+  background: none;
   border: none;
   cursor: pointer;
 }
