@@ -11,7 +11,9 @@
 <body id=view>
   <input id=input onkeydown=addTask(event) oninput=memo(this)>
   <button onclick=addTask()>💾</button>
-  <ul id=tasks></ul>
+  <div id=taskList>
+    <ul id=tasks></ul>
+  </div>
   <div id=templates>
     <li id=template>
       <button onclick=markTask(this)>✔️</button>
