@@ -15,7 +15,7 @@
   <div id=templates>
     <li id=template>
       <button onclick=markTask(this)>✔️</button>
-      <span id=task contenteditable
+      <span id=task  contenteditable  onfocus=memText(this)
             onkeydown=blurTask(event) onblur=updTask(this)></span>
       <button onclick=delTask(this)>❌</button>
     </li>

@@ -35,6 +35,9 @@ ul {
 #tasks>li>button:first-child {
   visibility: hidden;
 }
+#tasks>li.done>button:first-child:hover {
+  opacity: .4;
+}
 #tasks>li.done>button, #tasks>li:hover>button {
   visibility: unset;
 }

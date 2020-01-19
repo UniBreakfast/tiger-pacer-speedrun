@@ -70,6 +70,8 @@ const
     return clone
   },
 
+  getTask = id => state.tasks.find(task => task.id==id),
+
   addTask = e => {
     if (e && e.key!='Enter') return
     const name = input.value.trim()
@@ -90,17 +92,22 @@ const
   markTask = el => {
     const id = el.parentNode.id,
           done = el.parentNode.classList.contains('done')
-    updState(()=> (state.tasks.find(task => task.id==id).done = !done, 1))
+    updState(()=> (getTask(id).done = !done, 1))
   },
 
   updTask = el => {
     const id = el.parentNode.id,  name = el.innerText
-    updState(()=> (state.tasks.find(task => task.id==id).name = name, 1))
+    if (name!=getTask(id).name)
+      updState(()=> (getTask(id).name = name, 1))
   },
 
   blurTask = e => {
-    if (e.key=='Enter') e.target.blur()
+    const el = e.target
+    if (e.key=='Escape') el.innerText=el.prevText, el.blur()
+    else if (e.key=='Enter') el.blur()
   },
+
+  memText = el => el.prevText = el.innerText,
 
   memoVal = (el, val) => updState(()=>
     (state[el.id] = val!=undefined? val : el.value, 1)),
