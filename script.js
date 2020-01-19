@@ -96,6 +96,7 @@ const
   },
 
   updTask = el => {
+    if (el.prevText) el.innerText = el.prevText
     const id = el.parentNode.id,  name = el.innerText
     if (name!=getTask(id).name)
       updState(()=> (getTask(id).name = name, 1))
@@ -103,8 +104,8 @@ const
 
   blurTask = e => {
     const el = e.target
-    if (e.key=='Escape') el.innerText=el.prevText, el.blur()
-    else if (e.key=='Enter') el.blur()
+    if (e.key=='Escape') el.blur()
+    else if (e.key=='Enter') delete el.prevText, el.blur()
   },
 
   memText = el => el.prevText = el.innerText,
