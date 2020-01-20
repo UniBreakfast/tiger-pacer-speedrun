@@ -21,15 +21,20 @@
     </div>
     <div id=sorts>
       <button class=strikable onclick=hideBar(sorts)>&nbsp;👁️&nbsp;</button>
-      сорты
+      сортировки &nbsp;
+      <button onclick=sortAsc()>🔺</button>
+      <button onclick=sortDesc()>🔻</button>
+      <select id=sortsSel>
+
+      </select>
+      <!-- 🔼🔽 -->
     </div>
     <div id=filters>
       <button class=strikable onclick=hideBar(filters)>&nbsp;👁️&nbsp;</button>
       фильтры
       <button id=ifDone onclick=filterDone()>
         <span><span>✔️</span>✔️</span>
-        <span>✔️</span>
-        <span>✔️</span>
+        <span>✔️</span> <span>✔️</span>
       </button>
     </div>
   </div>
