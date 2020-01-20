@@ -47,18 +47,21 @@ body>button, #tasks>li>button {
 }
 #eye { text-decoration-style: double !important }
 #eye.striked:hover, #eye:not(:hover):not(.striked),
-.strikable:hover,
+.strikable:hover { text-decoration: line-through }
 
-#ifDone>span:nth-child(2),
-#ifDone>span>span { text-decoration: line-through }
 #ifDone>span { display: none }
+#ifDone>span:nth-child(2),
+#ifDone>span>span { opacity: .4 }
 #ifDone.all:hover>span:nth-child(2),
 #ifDone.not:hover>span:last-child,
 #ifDone.yes:hover>span:first-child,
 #ifDone.all:not(:hover)>span:first-child,
 #ifDone.not:not(:hover)>span:nth-child(2),
 #ifDone.yes:not(:hover)>span:last-child { display: unset }
-#ifDone { min-width: 3.6rem }
+#ifDone {
+  min-width: 3.6rem;
+  margin-left: 1rem;
+}
 
 #taskList {
   overflow: auto;
@@ -88,9 +91,9 @@ body>button, #tasks>li>button {
   transform: translateY(-.2rem);
   padding-bottom: .2rem;
 }
-#tasks>li>button:first-child { visibility: hidden }
+#tasks>li>button:first-child { opacity: .2 }
 #tasks>li.done>button:first-child:hover { opacity: .4 }
-#tasks>li.done>button, #tasks>li:hover>button { visibility: unset }
+#tasks>li.done>button, #tasks>li:hover>button { opacity: 1 }
 #tasks>li.done>span {
   text-decoration: line-through;
   text-decoration-color: #0909;
