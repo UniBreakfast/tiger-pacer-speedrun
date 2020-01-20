@@ -46,6 +46,7 @@ const
   syncViewOnce =()=> {
     if (view.v==state.v) return
     input.value = state.input
+    viewBars.map(bar => (state.hidden.includes(bar.id)? hide:show)(bar))
     tasks.clear()
     tasks.append(...state.tasks.map(buildTaskEl))
     view.v = state.v
@@ -108,13 +109,19 @@ const
     else if (e.key=='Enter') delete el.prevText, el.blur()
   },
 
-  memText = el => el.prevText = el.innerText,
+  memoText = el => el.prevText = el.innerText,
 
   memoVal = (el, val) => updState(()=>
     (state[el.id] = val!=undefined? val : el.value, 1)),
 
-  [ memo, memoNot, memoNow ] = makeThrottled(memoVal, MEMO_THROTTLE)
+  [ memo, memoNot, memoNow ] = makeThrottled(memoVal, MEMO_THROTTLE),
 
+  viewBars = [views, sorts, filters],
+  isHidden = el => el.classList.contains('hidden'),
+  show = el => el.classList.remove('hidden'),
+  hide = el => el.classList.add('hidden'),
+  toggleView =()=> viewBars.map(viewBars.every(isHidden)? show : hide),
+  memoHidden =()=> state.hidden = viewBars.filter(isHidden).map(bar => bar.id)
 
 let state = { v: 0, input: '', tasks: [], id: 0 }
 

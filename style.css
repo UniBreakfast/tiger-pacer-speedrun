@@ -15,20 +15,31 @@ ul {
   list-style: none;
 }
 
-#templates {
-  display: none;
-}
+.hidden, #templates { display: none }
 
 #input {
-  margin-left: 2rem;
+  width: 23rem;
+  padding-left: 1rem;
   border: .1rem solid;
   border-radius: .4rem;
 }
 
-#view>button, #tasks>li>button {
+body>button, #tasks>li>button {
+  transform: translateY(.01rem);
   background: none;
   cursor: pointer;
+  padding-top: 0;
   border: none;
+}
+
+#view {
+  padding: 0 .37rem;
+  font-size: 1.3rem;
+}
+#view button {
+  padding: 0;
+  border: none;
+  opacity: .9;
 }
 
 #taskList {
@@ -47,15 +58,9 @@ ul {
   padding-bottom: .2rem;
 }
 
-#tasks>li>button:first-child {
-  visibility: hidden;
-}
-#tasks>li.done>button:first-child:hover {
-  opacity: .4;
-}
-#tasks>li.done>button, #tasks>li:hover>button {
-  visibility: unset;
-}
+#tasks>li>button:first-child { visibility: hidden }
+#tasks>li.done>button:first-child:hover { opacity: .4 }
+#tasks>li.done>button, #tasks>li:hover>button { visibility: unset }
 #tasks>li.done>span {
   text-decoration: line-through;
   text-decoration-color: #0909;

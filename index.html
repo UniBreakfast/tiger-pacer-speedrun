@@ -8,20 +8,39 @@
   <link rel=stylesheet href=style.css>
 </head>
 
-<body id=view>
+<body>
+  <button onclick=toggleView(),updState(memoHidden)>👁️</button>
   <input id=input onkeydown=addTask(event) oninput=memo(this)>
   <button onclick=addTask()>💾</button>
+
+  <div id=view>
+    <div id=views>
+      <button onclick=hide(views),updState(memoHidden)>🔂</button>
+      views
+    </div>
+    <div id=sorts>
+      <button onclick=hide(sorts),updState(memoHidden)>🔃</button>
+      sorts
+    </div>
+    <div id=filters>
+      <button onclick=hide(filters),updState(memoHidden)>📶</button>
+      filters
+    </div>
+  </div>
+
   <div id=taskList>
     <ul id=tasks></ul>
   </div>
+
   <div id=templates>
     <li id=template>
       <button onclick=markTask(this)>✔️</button>
-      <span id=task  contenteditable  onfocus=memText(this)
+      <span id=task  contenteditable  onfocus=memoText(this)
             onkeydown=blurTask(event) onblur=updTask(this)></span>
       <button onclick=delTask(this)>❌</button>
     </li>
   </div>
+
 </body>
 
 </html>
