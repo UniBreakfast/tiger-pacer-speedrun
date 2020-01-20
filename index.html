@@ -9,21 +9,25 @@
 </head>
 
 <body>
-  <button onclick=toggleView(),updState(memoHidden)>👁️</button>
+  <button id=eye onclick=toggleView(),updState(memoHidden)>
+    &nbsp;👁️&nbsp;</button>
   <input id=input onkeydown=addTask(event) oninput=memo(this)>
   <button onclick=addTask()>💾</button>
 
   <div id=view>
     <div id=views>
-      <button onclick=hide(views),updState(memoHidden)>🔂</button>
+      <button class=strikable onclick=hide(views),updState(memoHidden)>
+        &nbsp;👁️&nbsp;</button>
       views
     </div>
     <div id=sorts>
-      <button onclick=hide(sorts),updState(memoHidden)>🔃</button>
+      <button class=strikable onclick=hide(sorts),updState(memoHidden)>
+        &nbsp;👁️&nbsp;</button>
       sorts
     </div>
     <div id=filters>
-      <button onclick=hide(filters),updState(memoHidden)>📶</button>
+      <button class=strikable onclick=hide(filters),updState(memoHidden)>
+        &nbsp;👁️&nbsp;</button>
       filters
     </div>
   </div>

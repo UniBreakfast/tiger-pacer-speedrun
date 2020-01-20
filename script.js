@@ -52,6 +52,7 @@ const
   syncViewOnce =()=> {
     if (view.v==state.v) return
     input.value = state.input
+    eye.classList[state.hidden[2]? 'remove':'add']('striked')
     viewBars.map(bar => (state.hidden.includes(bar.id)? hide:show)(bar))
     tasks.in().append(...state.tasks.map(buildTaskEl))
     view.v = state.v
