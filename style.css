@@ -53,21 +53,6 @@ body>button, #tasks>li>button {
   border: .1rem solid;
   border-radius: 2rem;
 }
-
-#tasks>li>button {
-  font-size: .8rem;
-  transform: translateY(-.2rem);
-  padding-bottom: .2rem;
-}
-
-#tasks>li>button:first-child { visibility: hidden }
-#tasks>li.done>button:first-child:hover { opacity: .4 }
-#tasks>li.done>button, #tasks>li:hover>button { visibility: unset }
-#tasks>li.done>span {
-  text-decoration: line-through;
-  text-decoration-color: #0909;
-}
-
 #taskList::-webkit-scrollbar-corner,
 #taskList::-webkit-scrollbar-track { background: #0000 }
 #taskList::-webkit-scrollbar { width: .7rem }
@@ -79,3 +64,18 @@ body>button, #tasks>li>button {
   border-radius: 50%;
   background: none;
 }
+
+#tasks>li>button {
+  font-size: .8rem;
+  transform: translateY(-.2rem);
+  padding-bottom: .2rem;
+}
+#tasks>li>button:first-child { visibility: hidden }
+#tasks>li.done>button:first-child:hover { opacity: .4 }
+#tasks>li.done>button, #tasks>li:hover>button { visibility: unset }
+#tasks>li.done>span {
+  text-decoration: line-through;
+  text-decoration-color: #0909;
+}
+
+#task { display: inline-block }

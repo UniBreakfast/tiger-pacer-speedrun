@@ -1,11 +1,17 @@
-HTMLElement.prototype.clear = function () {
-  if (this.value) this.value = ''
-  if (this.innerHTML) this.innerHTML = ''
-}
-
 const
   c = console.log,  ls = localStorage,
-  { parse, stringify } = JSON
+  { parse, stringify } = JSON,
+  { assign } = Object
+
+assign(HTMLElement.prototype, {
+  parent: function (sel) { return sel? this.closest(sel) : this.parentNode },
+  all: function (sel) { return [...this.querySelectorAll(sel)] },
+  in: function (str='') { this.innerHTML = str; return this },
+  val: function (str='') { this.value = str; return this },
+  first: function (sel) { return this.querySelector(sel) },
+  last: function (sel) { return this.all(sel).pop() },
+  child: function (sel) { return this.first(sel) },
+})
 
 const
 
@@ -47,8 +53,7 @@ const
     if (view.v==state.v) return
     input.value = state.input
     viewBars.map(bar => (state.hidden.includes(bar.id)? hide:show)(bar))
-    tasks.clear()
-    tasks.append(...state.tasks.map(buildTaskEl))
+    tasks.in().append(...state.tasks.map(buildTaskEl))
     view.v = state.v
   },
 
@@ -75,14 +80,19 @@ const
 
   addTask = e => {
     if (e && e.key!='Enter') return
-    const name = input.value.trim()
+    const name = input.value.trim(),  done = e.ctrlKey
     memoNot()
-    if (!name) return
-    updState(()=> {
-      state.tasks.push({id: ++state.id, name})
+    if (name) updState(()=> {
+      state.tasks.push({id: ++state.id, name, done})
       state.input = input.value = ''
       return 1
     } )
+  },
+
+  clickAddTask = e => {
+    if (['DIV', 'UL', 'LI'].includes(e.target.tagName))
+      updState(()=> state.tasks.push({id: ++state.id, name: ''})),
+      tasks.last('span').focus()
   },
 
   delTask = el => {
@@ -98,8 +108,9 @@ const
 
   updTask = el => {
     if (el.prevText) el.innerText = el.prevText
-    const id = el.parentNode.id,  name = el.innerText
-    if (name!=getTask(id).name)
+    const id = el.parentNode.id,  name = el.innerText.trim()
+    if (!name) delTask(el)
+    else if (name!=getTask(id).name)
       updState(()=> (getTask(id).name = name, 1))
   },
 
