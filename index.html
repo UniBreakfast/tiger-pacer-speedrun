@@ -9,26 +9,28 @@
 </head>
 
 <body>
-  <button id=eye onclick=toggleView(),updState(memoHidden)>
+  <button id=eye onclick=toggleView()>
     &nbsp;👁️&nbsp;</button>
   <input id=input onkeydown=addTask(event) oninput=memo(this)>
   <button onclick=addTask()>💾</button>
 
   <div id=view>
     <div id=views>
-      <button class=strikable onclick=hide(views),updState(memoHidden)>
-        &nbsp;👁️&nbsp;</button>
+      <button class=strikable onclick=hideBar(views)>&nbsp;👁️&nbsp;</button>
       виды
     </div>
     <div id=sorts>
-      <button class=strikable onclick=hide(sorts),updState(memoHidden)>
-        &nbsp;👁️&nbsp;</button>
+      <button class=strikable onclick=hideBar(sorts)>&nbsp;👁️&nbsp;</button>
       сорты
     </div>
     <div id=filters>
-      <button class=strikable onclick=hide(filters),updState(memoHidden)>
-        &nbsp;👁️&nbsp;</button>
+      <button class=strikable onclick=hideBar(filters)>&nbsp;👁️&nbsp;</button>
       фильтры
+      <button id=ifDone onclick=filterDone()>
+        <span><span>✔️</span>✔️</span>
+        <span>&nbsp;✔️&nbsp;</span>
+        <span>✔️</span>
+      </button>
     </div>
   </div>
 

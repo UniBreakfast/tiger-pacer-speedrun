@@ -45,8 +45,20 @@ body>button, #tasks>li>button {
   border: none;
   font-size: 1.3rem;
 }
-.striked, .strikable:hover { text-decoration: line-through }
-#eye.striked { text-decoration-style: double;}
+#eye { text-decoration-style: double !important }
+#eye.striked:hover, #eye:not(:hover):not(.striked),
+.strikable:hover,
+
+#ifDone>span:nth-child(2),
+#ifDone>span>span { text-decoration: line-through }
+#ifDone>span { display: none }
+#ifDone.all:hover>span:nth-child(2),
+#ifDone.not:hover>span:last-child,
+#ifDone.yes:hover>span:first-child,
+#ifDone.all:not(:hover)>span:first-child,
+#ifDone.not:not(:hover)>span:nth-child(2),
+#ifDone.yes:not(:hover)>span:last-child { display: unset }
+#ifDone { min-width: 3.6rem }
 
 #taskList {
   overflow: auto;

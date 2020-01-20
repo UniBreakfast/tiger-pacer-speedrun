@@ -1,17 +1,22 @@
 const
   c = console.log,  ls = localStorage,
   { parse, stringify } = JSON,
-  { assign } = Object
+  { assign } = Object,
+  getId = obj => obj.id
 
 assign(HTMLElement.prototype, {
   parent: function (sel) { return sel? this.closest(sel) : this.parentNode },
   all: function (sel) { return [...this.querySelectorAll(sel)] },
   in: function (str='') { this.innerHTML = str; return this },
   val: function (str='') { this.value = str; return this },
-  first: function (sel) { return this.querySelector(sel) },
+  // first: function (sel) { return this.querySelector(sel) },
   last: function (sel) { return this.all(sel).pop() },
-  child: function (sel) { return this.first(sel) },
+  // child: function (sel) { return this.first(sel) },
 })
+
+// assign(Array.prototype, {
+//   unique: function () { return [...new Set(this)]}
+// })
 
 const
 
@@ -51,10 +56,13 @@ const
 
   syncViewOnce =()=> {
     if (view.v==state.v) return
-    input.value = state.input
+    input.val(state.input)
     eye.classList[state.hidden[2]? 'remove':'add']('striked')
     viewBars.map(bar => (state.hidden.includes(bar.id)? hide:show)(bar))
-    tasks.in().append(...state.tasks.map(buildTaskEl))
+    ifDone.className = state.done
+    const condFn = state.done=='all'? Boolean :
+      task => task.done==(state.done=='yes')
+    tasks.in().append(...state.tasks.filter(condFn).map(buildTaskEl))
     view.v = state.v
   },
 
@@ -62,7 +70,7 @@ const
 
   updState = queryFn => {
     syncStoreOnce()
-    if (queryFn()) ++state.v
+    if (queryFn(state)) ++state.v
     syncView()
     syncStore()
   },
@@ -83,33 +91,30 @@ const
     if (e && e.key!='Enter') return
     const name = input.value.trim(),  done = e.ctrlKey
     memoNot()
-    if (name) updState(()=> {
-      state.tasks.push({id: ++state.id, name, done})
-      state.input = input.value = ''
+    if (name) updState(s => {
+      s.tasks.push({id: ++s.id, name, done})
+      input.val(s.input = '')
       return 1
     } )
   },
 
   clickAddTask = e => {
     if (['DIV', 'UL', 'LI'].includes(e.target.tagName))
-      updState(()=> state.tasks.push({id: ++state.id, name: ''})),
+      updState(s => s.tasks.push({id: ++s.id, name: ''})),
       tasks.last('span').focus()
   },
 
-  delTask = el => {
-    const id = el.parentNode.id
-    updState(()=> state.tasks = state.tasks.filter(task => task.id!=id))
-  },
+  delTask = el =>
+    updState(s => s.tasks = s.tasks.filter(task => task.id!=el.parent().id)),
 
   markTask = el => {
-    const id = el.parentNode.id,
-          done = el.parentNode.classList.contains('done')
-    updState(()=> (getTask(id).done = !done, 1))
+    const done = el.parent().classList.contains('done')
+    updState(()=> (getTask(el.parent().id).done = !done, 1))
   },
 
   updTask = el => {
     if (el.prevText) el.innerText = el.prevText
-    const id = el.parentNode.id,  name = el.innerText.trim()
+    const id = el.parent().id,  name = el.innerText.trim()
     if (!name) delTask(el)
     else if (name!=getTask(id).name)
       updState(()=> (getTask(id).name = name, 1))
@@ -129,12 +134,16 @@ const
   [ memo, memoNot, memoNow ] = makeThrottled(memoVal, MEMO_THROTTLE),
 
   viewBars = [views, sorts, filters],
-  isHidden = el => el.classList.contains('hidden'),
   show = el => el.classList.remove('hidden'),
   hide = el => el.classList.add('hidden'),
-  toggleView =()=> viewBars.map(viewBars.every(isHidden)? show : hide),
-  memoHidden =()=> state.hidden = viewBars.filter(isHidden).map(bar => bar.id)
+  hideBar = el => updState(s => s.hidden.push(el.id)),
+  toggleView =()=>
+    updState(s => s.hidden = s.hidden[2]? [] : viewBars.map(getId)),
 
-let state = { v: 0, input: '', tasks: [], id: 0 }
+  filterDone =()=> updState(s =>
+    s.done = s.done=='all'? 'not' : s.done=='not'? 'yes' : 'all')
+
+
+let state = { v: 0, input: '', hidden: [], done:'all', tasks: [], id: 0 }
 
 syncStore(), syncView()
