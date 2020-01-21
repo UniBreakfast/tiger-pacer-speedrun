@@ -23,10 +23,14 @@
       <button class=strikable onclick=hideBar(sorts)>&nbsp;👁️&nbsp;</button>
       сортировки &nbsp;
       <button onclick=sortAsc()>🔺</button>
+      <span>
+        <button onclick=toggleSortSel()></button>
+        <span id=sortSel>
+          <button id=byStatus onclick=selSort(byStatus)>статус</button>
+          <button id=byName onclick=selSort(byName)>название</button>
+        </span>
+      </span>
       <button onclick=sortDesc()>🔻</button>
-      <select id=sortsSel>
-
-      </select>
       <!-- 🔼🔽 -->
     </div>
     <div id=filters>
@@ -47,7 +51,7 @@
     <li id=template>
       <button onclick=markTask(this)>✔️</button>
       <span id=task  contenteditable  onfocus=memoText(this)
-            onkeydown=blurTask(event) onblur=updTask(this)></span>
+            onkeydown=blurTask(event) onblur=updTask(this)></select>
       <button onclick=delTask(this)>❌</button>
     </li>
   </div>
