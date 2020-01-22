@@ -18,11 +18,11 @@ ul {
 }
 
 button {
-  border: none;
-  background: none;
   padding: 0;
-  display: inline-flex;
+  border: none;
   cursor: pointer;
+  background: none;
+  display: inline-flex;
 }
 button>img {
   width: 1.9rem;
@@ -62,19 +62,6 @@ button>img:hover { animation: enlarge .15s ease-out 2 alternate }
 
 .strikable:hover { text-decoration: line-through }
 
-/* #ifDone>span { display: none }
-#ifDone>span:nth-child(2),
-#ifDone>span>span { opacity: .4 }
-#ifDone.all:hover>span:nth-child(2),
-#ifDone.not:hover>span:last-child,
-#ifDone.yes:hover>span:first-child,
-#ifDone.all:not(:hover)>span:first-child,
-#ifDone.not:not(:hover)>span:nth-child(2),
-#ifDone.yes:not(:hover)>span:last-child { display: unset }
-#ifDone {
-  min-width: 3.6rem;
-  margin-left: 1rem;
-} */
 #ifDone { min-width: 2.8rem }
 #ifDone>img { animation: none }
 #ifDone:not(.all) { justify-content: center }
@@ -112,20 +99,10 @@ button>img:hover { animation: enlarge .15s ease-out 2 alternate }
   animation: none;
   margin: 0 .8rem;
 }
-#tasks>li>button>img:nth-child(2) {
-  position: absolute;
-}
-#tasks>li:not(.done)>button>img:nth-child(2) {
-  display: none;
-}
-#tasks>li.done>span {
-  text-decoration: line-through;
-  text-decoration-color: #0909;
-}
-#tasks>li {
-  display: flex;
-  align-items: center;
-}
+#tasks>li>button>img:nth-child(2) { position: absolute }
+#tasks>li:not(.done)>button>img:nth-child(2) { display: none }
+#tasks>li.done>span { text-decoration: line-through #4b0a }
+#tasks>li { display: flex;  align-items: center }
 #tasks>li>button:last-child>img {
   width: 1rem;
   height: 1rem;
