@@ -9,18 +9,21 @@
 </head>
 
 <body>
-  <button id=eye onclick=toggleView()>
-    &nbsp;👁️&nbsp;</button>
-  <input id=input onkeydown=addTask(event) oninput=memo(this)>
-  <button onclick=addTask()>💾</button>
+  <div id=inputBar>
+    <button id=eye onclick=toggleView()>
+      <img src=png/eye.png> <img src=png/hide.png>
+    </button>
+    <input id=input onkeydown=addTask(event) oninput=memo(this)>
+    <button onclick=addTask()> <img src=png/add.png> </button>
+  </div>
 
   <div id=view>
     <div id=views>
-      <button class=strikable onclick=hideBar(views)>&nbsp;👁️&nbsp;</button>
+      <button onclick=hideBar(views)> <img src=png/eye.png> </button>
       виды
     </div>
     <div id=sorts>
-      <button class=strikable onclick=hideBar(sorts)>&nbsp;👁️&nbsp;</button>
+      <button onclick=hideBar(sorts)> <img src=png/eye.png> </button>
       сортировки &nbsp;
       <button onclick=sortAsc()>🔺</button>
       <span>
@@ -34,7 +37,7 @@
       <!-- 🔼🔽 -->
     </div>
     <div id=filters>
-      <button class=strikable onclick=hideBar(filters)>&nbsp;👁️&nbsp;</button>
+      <button onclick=hideBar(filters)> <img src=png/eye.png> </button>
       фильтры
       <button id=ifDone onclick=filterDone()>
         <span><span>✔️</span>✔️</span>
@@ -47,11 +50,26 @@
     <ul id=tasks></ul>
   </div>
 
+  <footer>icons made by
+    <a href="https://flaticon.com/authors/srip"
+      title="srip">srip</a>,
+    <a href="https://flaticon.com/authors/dmitri13"
+      title="dmitri13">dmitri13</a>,
+    <a href="https://flaticon.com/authors/freepik"
+      title="Freepik">Freepik</a>,
+    <a href="https://flaticon.com/authors/those-icons"
+      title="Those Icons">Those Icons</a> from
+    <a href="https://flaticon.com/"
+      title="Flaticon">flaticon.com</a>
+  </footer>
+
   <div id=templates>
     <li id=template>
-      <button onclick=markTask(this)>✔️</button>
+      <button onclick=markTask(this)>
+        <img src=png/box.png> <img src=png/check.png>
+      </button>
       <span id=task  contenteditable  onfocus=memoText(this)
-            onkeydown=blurTask(event) onblur=updTask(this)></select>
+            onkeydown=blurTask(event) onblur=updTask(this)></span>
       <button onclick=delTask(this)>❌</button>
     </li>
   </div>

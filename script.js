@@ -57,7 +57,8 @@ const
   syncViewOnce =()=> {
     if (view.v==state.v) return
     input.val(state.input)
-    eye.classList[state.hidden[2]? 'remove':'add']('striked')
+    setTimeout(()=>
+      eye.classList[state.hidden[2]? 'remove':'add']('striked'), 300)
     viewBars.map(bar => (state.hidden.includes(bar.id)? hide:show)(bar))
     ifDone.className = state.done
     const condFn = state.done=='all'? Boolean :
@@ -89,7 +90,7 @@ const
 
   addTask = e => {
     if (e && e.key!='Enter') return
-    const name = input.value.trim(),  done = e.ctrlKey
+    const name = input.value.trim(),  done = e && e.ctrlKey
     memoNot()
     if (name) updState(s => {
       s.tasks.push({id: ++s.id, name, done})
