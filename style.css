@@ -25,8 +25,8 @@ button {
   cursor: pointer;
 }
 button>img {
-  width: 2.1rem;
-  height: 2.1rem;
+  width: 1.9rem;
+  height: 1.9rem;
 }
 button>img:hover { animation: enlarge .15s ease-out 2 alternate }
 @keyframes enlarge { to { transform: scale(1.2) } }
@@ -52,8 +52,8 @@ button>img:hover { animation: enlarge .15s ease-out 2 alternate }
   font-size: 1.3rem;
 }
 #view img, #taskList img {
-  width: 1.6rem;
-  height: 1.6rem;
+  width: 1.4rem;
+  height: 1.4rem;
 }
 #view button { margin: 0 .7rem }
 
@@ -62,7 +62,7 @@ button>img:hover { animation: enlarge .15s ease-out 2 alternate }
 
 .strikable:hover { text-decoration: line-through }
 
-#ifDone>span { display: none }
+/* #ifDone>span { display: none }
 #ifDone>span:nth-child(2),
 #ifDone>span>span { opacity: .4 }
 #ifDone.all:hover>span:nth-child(2),
@@ -74,7 +74,15 @@ button>img:hover { animation: enlarge .15s ease-out 2 alternate }
 #ifDone {
   min-width: 3.6rem;
   margin-left: 1rem;
-}
+} */
+#ifDone { min-width: 2.8rem }
+#ifDone>img { animation: none }
+#ifDone:not(.all) { justify-content: center }
+#ifDone>img:last-child { position: absolute }
+#ifDone.yes>img:nth-child(2) { display: none }
+#ifDone.not>img:not(:first-child) { display: none }
+#ifDone:hover { animation: enlarge .15s ease-out 2 alternate }
+
 
 #taskList {
   overflow: auto;
@@ -104,10 +112,10 @@ button>img:hover { animation: enlarge .15s ease-out 2 alternate }
   animation: none;
   margin: 0 .8rem;
 }
-#tasks>li>button>img:last-child {
+#tasks>li>button>img:nth-child(2) {
   position: absolute;
 }
-#tasks>li:not(.done)>button>img:last-child {
+#tasks>li:not(.done)>button>img:nth-child(2) {
   display: none;
 }
 #tasks>li.done>span {
@@ -118,7 +126,11 @@ button>img:hover { animation: enlarge .15s ease-out 2 alternate }
   display: flex;
   align-items: center;
 }
-#task { display: inline-block }
+#tasks>li>button:last-child>img {
+  width: 1rem;
+  height: 1rem;
+  margin-top: .2rem;
+}
 
 footer {
   position: fixed;
