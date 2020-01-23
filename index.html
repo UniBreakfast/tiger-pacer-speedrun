@@ -8,7 +8,7 @@
   <link rel=stylesheet href=style.css>
 </head>
 
-<body>
+<body onkeydown=globalHK(event)>
   <div id=inputBar>
     <button id=eye onclick=toggleView()>
       <img src=png/eye.png> <img src=png/hide.png>
@@ -49,7 +49,10 @@
     <ul id=tasks></ul>
   </div>
 
-  <footer>icons made by
+  <footer>
+    <a href=javascript:saveState()>save</a>
+    <a href=javascript:stateLoader.click()>load</a>
+    <br> icons made by
     <a href="https://flaticon.com/authors/srip"
       title="srip">srip</a>,
     <a href="https://flaticon.com/authors/dmitri13"
@@ -62,7 +65,7 @@
       title="Flaticon">flaticon.com</a>
   </footer>
 
-  <div id=templates>
+  <div id=underhood>
     <li id=template>
       <button onclick=markTask(this)>
         <img src=png/box.png> <img src=png/check.png>
@@ -71,7 +74,9 @@
             onkeydown=blurTask(event) onblur=updTask(this)></span>
       <button onclick=delTask(this)> <img src=png/cross.png> </button>
     </li>
-    <a onclick=saveState(this)></a>
+
+    <a id=stateSaver></a>
+    <input type=file id=stateLoader onchange=loadState()></input>
   </div>
 
 </body>

@@ -142,7 +142,29 @@ const
     updState(s => s.hidden = s.hidden[2]? [] : viewBars.map(getId)),
 
   filterDone =()=> updState(s =>
-    s.done = s.done=='all'? 'not' : s.done=='not'? 'yes' : 'all')
+    s.done = s.done=='all'? 'not' : s.done=='not'? 'yes' : 'all'),
+
+  globalHK = e => {
+    if ('sыі'.includes(e.key) && e.ctrlKey) e.preventDefault(), saveState()
+    if ('lд'.includes(e.key) && e.ctrlKey)
+      e.preventDefault(), stateLoader.click()
+  },
+
+  saveState =()=> {
+    stateSaver.href =
+      'data:text/plain;charset=utf-8,'+encodeURI(stringify(state,'',2))
+    stateSaver.download = String(new Date).match(/^\w+ (.+(:\d+){2})/)[1]
+      .replace(/:/g,'-')+'.json'
+    stateSaver.click()
+  },
+
+  loadState =()=> {
+    const reader = new FileReader()
+    reader.readAsText(stateLoader.files[0])
+    reader.onload = e => updState(()=>
+      state = assign(parse(e.target.result), {v: state.v}))
+    stateLoader.val()
+  }
 
 
 let state = { v: 0, input: '', hidden: [], done:'all', tasks: [], id: 0 }
