@@ -24,11 +24,10 @@
     </div>
     <div id=sorts>
       <button onclick=hideBar(sorts)> <img src=png/eye.png> </button>
-      сортировки &nbsp;
-      <button onclick=sortAsc()> <img src=png/asc.png> </button>
-      <button onclick=sortDesc()> <img src=png/desc.png> </button>
+      сортировки
+      <button id=tiger onclick=changeDir()> <img src=png/tiger.png> </button>
       <span>
-        <button onclick=toggleSortSel()></button>
+        <button onclick=toggleSortSel()>порядок</button>
         <span id=sortSel>
           <button id=byId onclick=selSort(byStatus)>порядок</button>
           <button id=byDone onclick=selSort(byStatus)>статус</button>
@@ -50,13 +49,16 @@
   </div>
 
   <footer>
-    <a href=javascript:saveState()>save</a>
-    <a href=javascript:stateLoader.click()>load</a>
+    <span>
+      <a href=javascript:saveState()>save</a> |
+      <a href=javascript:stateLoader.click()>load</a>
+    </span>
     <br> icons made by
     <a href="https://flaticon.com/authors/srip"
       title="srip">srip</a>,
     <a href="https://flaticon.com/authors/dmitri13"
       title="dmitri13">dmitri13</a>,
+    <a href="https://flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a>,
     <a href="https://flaticon.com/authors/freepik"
       title="Freepik">Freepik</a>,
     <a href="https://flaticon.com/authors/those-icons"

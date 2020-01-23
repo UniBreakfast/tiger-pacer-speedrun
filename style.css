@@ -60,7 +60,10 @@ button>img:hover { animation: enlarge .15s ease-out 2 alternate }
 #eye.striked>img:last-child { display: none }
 #eye:not(.striked)>img:first-child { display: none }
 
-.strikable:hover { text-decoration: line-through }
+#tiger img {
+  width: 2rem;
+  height: 2rem;
+}
 
 #ifDone { min-width: 2.8rem }
 #ifDone>img { animation: none }
@@ -118,6 +121,7 @@ footer {
   text-align: center;
   color: #666;
 }
-footer>a { color: inherit }
+footer>span { font-size: 1.2rem }
+footer a { color: inherit }
 
 .hidden, #underhood { display: none !important }
