@@ -101,7 +101,7 @@ const
 
   clickAddTask = e => {
     if (['DIV', 'UL', 'LI'].includes(e.target.tagName))
-      updState(s => s.tasks.push({id: ++s.id, name: ''})),
+      updState(s=> s.tasks.push({id:++s.id, name:'', done: state.done=='yes'})),
       tasks.last('span').focus()
   },
 

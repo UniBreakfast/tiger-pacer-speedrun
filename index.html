@@ -27,7 +27,7 @@
       сортировки &nbsp;
       <button onclick=sortAsc()> <img src=png/asc.png> </button>
       <button onclick=sortDesc()> <img src=png/desc.png> </button>
-<!--       <span>
+      <span>
         <button onclick=toggleSortSel()></button>
         <span id=sortSel>
           <button id=byId onclick=selSort(byStatus)>порядок</button>
@@ -35,7 +35,6 @@
           <button id=byName onclick=selSort(byName)>название</button>
         </span>
       </span>
- -->      <!-- 🔼🔽 -->
     </div>
     <div id=filters>
       <button onclick=hideBar(filters)> <img src=png/eye.png> </button>
@@ -72,6 +71,7 @@
             onkeydown=blurTask(event) onblur=updTask(this)></span>
       <button onclick=delTask(this)> <img src=png/cross.png> </button>
     </li>
+    <a onclick=saveState(this)></a>
   </div>
 
 </body>
