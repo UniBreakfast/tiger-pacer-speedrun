@@ -110,7 +110,7 @@ const
   },
 
   clickAddTask = e => {
-    if (['DIV', 'UL', 'LI'].includes(e.target.tagName))
+    if (['DIV', 'UL', 'LI', 'BODY'].includes(e.target.tagName))
       updState(s=> s.tasks.push({id:++s.id, name:'', done: state.done=='yes'})),
       tasks.last(`[id="${state.id}"]>span`).focus()
   },
@@ -155,8 +155,9 @@ const
     s.done = s.done=='all'? 'not' : s.done=='not'? 'yes' : 'all'),
 
   globalHK = e => {
-    if ('sыі'.includes(e.key) && e.ctrlKey) e.preventDefault(), saveState()
-    if ('lд'.includes(e.key) && e.ctrlKey)
+    if (e.key=='Enter' && e.target==document.body) setTimeout(clickAddTask,0, e)
+    else if ('sыі'.includes(e.key) && e.ctrlKey) e.preventDefault(), saveState()
+    else if ('lд'.includes(e.key) && e.ctrlKey)
       e.preventDefault(), stateLoader.click()
   },
 
