@@ -27,6 +27,7 @@ button {
 button>img {
   width: 1.9rem;
   height: 1.9rem;
+  transition: all .3s
 }
 button>img:hover { animation: enlarge .15s ease-out 2 alternate }
 @keyframes enlarge { to { transform: scale(1.2) } }
@@ -48,7 +49,7 @@ button>img:hover { animation: enlarge .15s ease-out 2 alternate }
   display: flex;
   align-items: center;
 }
-#view {
+#view, #view button {
   font-size: 1.3rem;
 }
 #view img, #taskList img {
@@ -60,9 +61,24 @@ button>img:hover { animation: enlarge .15s ease-out 2 alternate }
 #eye.striked>img:last-child { display: none }
 #eye:not(.striked)>img:first-child { display: none }
 
+#view #tiger { margin-left: 2rem }
 #tiger img {
   width: 2rem;
   height: 2rem;
+}
+#tiger.desc:hover>img { animation-duration: .3s }
+.desc>img { transform: rotate(180deg) }
+
+#sorts>span { position: relative }
+#sortSel {
+  top: -1rem;
+  display: flex;
+  padding: .3rem 0;
+  position: absolute;
+  background: white;
+  border-radius: .3rem;
+  border: 0.1rem solid;
+  flex-direction: column;
 }
 
 #ifDone { min-width: 2.8rem }
@@ -123,5 +139,13 @@ footer {
 }
 footer>span { font-size: 1.2rem }
 footer a { color: inherit }
+
+.glass {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: fixed;
+}
 
 .hidden, #underhood { display: none !important }

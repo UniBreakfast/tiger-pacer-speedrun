@@ -6,12 +6,12 @@ const
 
 assign(HTMLElement.prototype, {
   parent: function (sel) { return sel? this.closest(sel) : this.parentNode },
-  all: function (sel) { return [...this.querySelectorAll(sel)] },
+  all: function (sel='*') { return [...this.querySelectorAll(sel)] },
   in: function (str='') { this.innerHTML = str; return this },
   val: function (str='') { this.value = str; return this },
-  // first: function (sel) { return this.querySelector(sel) },
-  last: function (sel) { return this.all(sel).pop() },
-  // child: function (sel) { return this.first(sel) },
+  first: function (sel) { return this.querySelector(sel) },
+  last: function (sel='*') { return this.all(sel).pop() },
+  child: function (sel) { return this.first(sel) },
 })
 
 // assign(Array.prototype, {
@@ -57,13 +57,20 @@ const
   syncViewOnce =()=> {
     if (view.v==state.v) return
     input.val(state.input)
-    setTimeout(()=>
-      eye.classList[state.hidden[2]? 'remove':'add']('striked'), 300)
+    setTimeout(()=> {
+      eye.classList[state.hidden[2]? 'remove':'add']('striked')
+      tiger.className = state.dir
+    }, 300)
     viewBars.map(bar => (state.hidden.includes(bar.id)? hide:show)(bar))
+    sort.in(sortSel.child('#'+state.sort).innerText)
     ifDone.className = state.done
     const condFn = state.done=='all'? Boolean :
-      task => task.done==(state.done=='yes')
-    tasks.in().append(...state.tasks.filter(condFn).map(buildTaskEl))
+            task => task.done==(state.done=='yes'),
+          prop = state.sort.slice(2).toLowerCase(),
+          desc = state.dir? -1 : 1,
+          sortFn =(a, b)=> a[prop]<b[prop]? 1*desc : -1*desc
+    tasks.in()
+      .append(...state.tasks.filter(condFn).sort(sortFn).map(buildTaskEl))
     view.v = state.v
   },
 
@@ -162,9 +169,19 @@ const
       state = assign(parse(e.target.result), {v: state.v}))})
         .readAsText(stateLoader.files[0])
     stateLoader.val()
+  },
+
+  toggleSortSel = el =>
+    [sortSel, el.last()].map(el => el.classList.toggle('hidden')),
+
+  selSort = el => updState(s => s.sort = el.id, sort.parent().click()),
+
+  changeDir =()=> {
+    tiger.classList.toggle('desc')
+    updState(s => (s.dir = s.dir? '':'desc', 1))
   }
 
 
-let state = { v: 0, input: '', hidden: [], done:'all', tasks: [], id: 0 }
+let state = { v: 0, input: '', sort: 'byId', dir: 'desc', hidden: [], done:'all', tasks: [], id: 0 }
 
 syncStore(), syncView()

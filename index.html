@@ -25,12 +25,16 @@
     <div id=sorts>
       <button onclick=hideBar(sorts)> <img src=png/eye.png> </button>
       сортировки
-      <button id=tiger onclick=changeDir()> <img src=png/tiger.png> </button>
+      <button id=tiger onclick=changeDir() class=desc>
+        <img src=png/tiger.png>
+      </button>
       <span>
-        <button onclick=toggleSortSel()>порядок</button>
-        <span id=sortSel>
-          <button id=byId onclick=selSort(byStatus)>порядок</button>
-          <button id=byDone onclick=selSort(byStatus)>статус</button>
+        <button onclick=toggleSortSel(this)>
+          <span id=sort></span> <div class='glass hidden'></div>
+        </button>
+        <span id=sortSel class=hidden>
+          <button id=byId onclick=selSort(byId)>порядок</button>
+          <button id=byDone onclick=selSort(byDone)>статус</button>
           <button id=byName onclick=selSort(byName)>название</button>
         </span>
       </span>
