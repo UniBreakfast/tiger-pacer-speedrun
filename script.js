@@ -63,14 +63,16 @@ const
     }, 300)
     viewBars.map(bar => (state.hidden.includes(bar.id)? hide:show)(bar))
     sort.in(sortSel.child('#'+state.sort).innerText)
+    filterInp.val(state.filter)
     ifDone.className = state.done
     const condFn = state.done=='all'? Boolean :
             task => task.done==(state.done=='yes'),
           prop = state.sort.slice(2).toLowerCase(),
           desc = state.dir? -1 : 1,
           sortFn =(a, b)=> a[prop]<b[prop]? 1*desc : -1*desc
-    tasks.in()
-      .append(...state.tasks.filter(condFn).sort(sortFn).map(buildTaskEl))
+    tasks.in().append(...state.tasks.filter(condFn).filter(state.filter?
+      task => task.name.toLowerCase().includes(state.filter) : Boolean)
+        .sort(sortFn).map(buildTaskEl))
     view.v = state.v
   },
 
@@ -179,9 +181,12 @@ const
   changeDir =()=> {
     tiger.classList.toggle('desc')
     updState(s => (s.dir = s.dir? '':'desc', 1))
-  }
+  },
+
+  partFilter = el => setTimeout(updState, 0,
+    s => (s.filter = el.value.toLowerCase(), 1))
 
 
-let state = { v: 0, input: '', sort: 'byId', dir: 'desc', hidden: [], done:'all', tasks: [], id: 0 }
+let state = { v: 0, input: '', sort: 'byId', dir: 'desc', hidden: [], done:'all', filter:'', tasks: [], id: 0 }
 
 syncStore(), syncView()
