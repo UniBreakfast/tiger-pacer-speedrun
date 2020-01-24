@@ -69,10 +69,11 @@ const
             task => task.done==(state.done=='yes'),
           prop = state.sort.slice(2).toLowerCase(),
           desc = state.dir? -1 : 1,
-          sortFn =(a, b)=> a[prop]<b[prop]? 1*desc : -1*desc
-    tasks.in().append(...state.tasks.filter(condFn).filter(state.filter?
-      task => task.name.toLowerCase().includes(state.filter) : Boolean)
-        .sort(sortFn).map(buildTaskEl))
+          sortFn =(a, b)=> a[prop]<b[prop]? 1*desc : -1*desc,
+          shown = state.tasks.filter(condFn).filter(state.filter?
+            task => task.name.toLowerCase().includes(state.filter) : Boolean)
+    tasks.in().append(...shown.sort(sortFn).map(buildTaskEl))
+    updStatusBar(shown)
     view.v = state.v
   },
 
@@ -184,7 +185,31 @@ const
   },
 
   partFilter = el => setTimeout(updState, 0,
-    s => (s.filter = el.value.toLowerCase(), 1))
+    s => (s.filter = el.value.toLowerCase(), 1)),
+
+  ending1 = n => n>5&&n<21? '' : n%10==1? 'а' : n%10>1&&n%10<5? 'и' : '',
+  ending2 = n => n%10==1&&n!=11? 'и' : '',
+  ending3 = n => n%10==1&&n!=11? 'е' : 'ю',
+  ending4 = n => n>5&&n<21? 'ых' : n%10==1? 'ая' : n%10>1&&n%10<5? 'ые' : 'ых',
+
+  updStatusBar = tasks => {
+    const total = state.tasks.length,  shown = tasks.length,
+          done = tasks.filter(task => task.done).length,
+          filtered = total - shown,  planned = shown - done
+    let line
+    if (!total) line = 'нет задач - самое время что-то запланировать!'
+    else {
+      if (!shown) line = 'нет задач, прошедших фильтры'
+      else if (!done) line = planned+` задач${ending1(planned)} ожида${
+        ending3(planned)}т выполнения`
+      else if (planned) line = planned+` из ${shown} задач${ending2(shown)
+        } ожидают выполнения`
+      else line = done+` выполненн${ending4(done)} задач`+ending1(done)
+      if (filtered) line += ` (${filtered} отфильтровано)`
+      else if (!planned) line += ', добавьте новые!'
+    }
+    statusBar.in(line)
+  }
 
 
 let state = { v: 0, input: '', sort: 'byId', dir: 'desc', hidden: [], done:'all', filter:'', tasks: [], id: 0 }

@@ -49,7 +49,7 @@ input {
   display: flex;
   align-items: center;
 }
-#view, #view button, #view input {
+#view, #view button, #view input, #statusBar {
   font-size: 1.3rem;
 }
 #view img, #taskList img {
@@ -136,6 +136,8 @@ input {
   height: 1rem;
   margin-top: .2rem;
 }
+
+#statusBar { padding-left: 2rem }
 
 footer {
   position: fixed;
