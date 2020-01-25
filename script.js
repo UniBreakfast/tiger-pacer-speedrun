@@ -109,22 +109,29 @@ const
 
   getTask = id => state.tasks.find(task => task.id==id),
 
+  date2day =(date=new Date)=> +((date.getYear()%100+'').padEnd(2,0)+
+    (date.getMonth()+1+'').padEnd(2,0)+(date.getDate()+'').padEnd(2,0)),
+
+  day2date = day => (day='20'+day, new Date(day.slice(0,4)+'-'+
+    day.slice(4,6)+'-'+day.slice(6))),
+
+  Task = function (name, done, day=date2day()) {
+    done = done? 1 : 0,
+    assign(this, {id: ++state.id, name, done, day})
+  },
+
   addTask = e => {
     if (e && e.key!='Enter') return
     const name = input.value.trim(),  done = e && e.ctrlKey
     memoNot()
-    if (name) updState(s => {
-      s.tasks.push({id: ++s.id, name, done})
-      input.val(s.input = '')
-      return 1
-    } )
+    if (name) updState(s => (s.tasks.push(new Task(name, done)),
+      input.val(s.input = ''), 1))
   },
 
   clickAddTask = e => {
-    if (['DIV', 'UL', 'LI', 'BODY'].includes(e.target.tagName))
-      updState(s => (s.filter = '',
-        s.tasks.push({id: ++s.id, name: '', done: state.done=='yes'}))),
-      tasks.last(`[id="${state.id}"]>span`).focus()
+    if (!['DIV', 'UL', 'LI', 'BODY'].includes(e.target.tagName)) return
+    updState(s => (s.filter='', s.tasks.push(new Task('', state.done=='yes'))))
+    tasks.last(`[id="${state.id}"]>span`).focus()
   },
 
   delTask = el => {
@@ -160,8 +167,8 @@ const
     else if (e.key[5]=='R' && getSelection().getRangeAt(0).endOffset == el.innerText.length) el.next().focus()
     else if (e.key=='Escape') el.blur()
     else if (e.key=='Enter') {
-      if (e.ctrlKey) updState(s => (s.filter = '', s.tasks.push(
-        {id: ++s.id, name: el.innerText.trim(), done: state.done=='yes'}))),
+      if (e.ctrlKey) updState(s => (s.filter = '',
+        s.tasks.push(new Task(el.innerText.trim(), state.done=='yes')))),
         tasks.last(`[id="${state.id}"]>span`).focus()
       else delete el.prevText, el.blur()
     }
