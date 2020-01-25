@@ -4,14 +4,25 @@ const
   { assign } = Object,
   getId = obj => obj.id
 
+Event.prototype.pd = Event.prototype.preventDefault
+
 assign(HTMLElement.prototype, {
-  parent: function (sel) { return sel? this.closest(sel) : this.parentNode },
-  all: function (sel='*') { return [...this.querySelectorAll(sel)] },
+  next: function () { return this.nextElementSibling },
+  prev: function () { return this.previousElementSibling },
   in: function (str='') { this.innerHTML = str; return this },
   val: function (str='') { this.value = str; return this },
-  first: function (sel) { return this.querySelector(sel) },
-  last: function (sel='*') { return this.all(sel).pop() },
-  child: function (sel) { return this.first(sel) },
+  parent: function (sel) { return sel? this.closest(sel) : this.parentNode },
+  all: function (sel) {
+         return [...sel? this.querySelectorAll(sel) : this.children] },
+  last: function (sel) {
+          return sel? this.all(sel).pop() : this.lastElementChild },
+  first: function (sel) {
+           return sel? this.querySelector(sel) : this.firstElementChild },
+  child: function (sel) { return typeof sel!='number'? this.first(sel) :
+           this.children[sel<0? this.all().length+sel : sel] },
+  sibs: function (i) { return typeof i!='number'? this.parent().all() :
+          this.parent().child(i) },
+  i: function () { return this.sibs().indexOf(this) },
 })
 
 // assign(Array.prototype, {
@@ -111,16 +122,27 @@ const
 
   clickAddTask = e => {
     if (['DIV', 'UL', 'LI', 'BODY'].includes(e.target.tagName))
-      updState(s=> s.tasks.push({id:++s.id, name:'', done: state.done=='yes'})),
+      updState(s=> (s.filter='',
+        s.tasks.push({id:++s.id, name:'', done: state.done=='yes'}))),
       tasks.last(`[id="${state.id}"]>span`).focus()
   },
 
-  delTask = el =>
-    updState(s => s.tasks = s.tasks.filter(task => task.id!=el.parent().id)),
+  delTask = el => {
+    if (tasks.all().length>1) {
+      const heir = (el.parent().next() || el.parent().prev()).id
+      setTimeout(()=> tasks.child(`[id="${heir}"]`).last().focus(), 0)
+    }
+    updState(s => s.tasks = s.tasks.filter(task => task.id!=el.parent().id))
+  },
 
   markTask = el => {
-    const done = el.parent().classList.contains('done')
-    updState(()=> (getTask(el.parent().id).done = !done, 1))
+    const done = el.parent().classList.contains('done'),
+          id = el.parent().id
+    updState(()=> (getTask(id).done = !done, 1))
+    setTimeout(()=> {
+      const el = tasks.first(`[id="${id}"]`)
+      if (el) el.first().focus()
+    }, 0)
   },
 
   updTask = el => {
@@ -133,7 +155,10 @@ const
 
   blurTask = e => {
     const el = e.target
-    if (e.key=='Escape') el.blur()
+    if (e.key[5]=='L' && !getSelection().getRangeAt(0).endOffset)
+      el.prev().focus()
+    else if (e.key[5]=='R' && getSelection().getRangeAt(0).endOffset == el.innerText.length) el.next().focus()
+    else if (e.key=='Escape') el.blur()
     else if (e.key=='Enter') delete el.prevText, el.blur()
   },
 
@@ -155,10 +180,12 @@ const
     s.done = s.done=='all'? 'not' : s.done=='not'? 'yes' : 'all'),
 
   globalHK = e => {
-    if (e.key=='Enter' && e.target==document.body) setTimeout(clickAddTask,0, e)
-    else if ('sыі'.includes(e.key) && e.ctrlKey) e.preventDefault(), saveState()
-    else if ('lд'.includes(e.key) && e.ctrlKey)
-      e.preventDefault(), stateLoader.click()
+    if (e.key=='Enter' && e.target==body) setTimeout(clickAddTask,0, e)
+    else if ('sыі'.includes(e.key) && e.ctrlKey) e.pd(), saveState()
+    else if ('lд'.includes(e.key) && e.ctrlKey) e.pd(), stateLoader.click()
+    else if (e.key.includes('Arrow') && (e.target==body ||
+      (e.target.parent('#tasks') && (e.target.id!='task' ||
+        !e.key.endsWith('t'))))) e.pd(), arrowMove(e)
   },
 
   saveState =()=> {
@@ -210,9 +237,21 @@ const
       else if (!planned) line += ', добавьте новые!'
     }
     statusBar.in(line)
+  },
+
+  arrowMove = e => {
+    if (e.target==body) tasks.child((taskList.scrollTop+taskList.clientHeight/2)
+      * tasks.all().length / tasks.clientHeight |0).first().focus()
+    const el = document.activeElement
+    if (e.key[5]=='U') (el.parent().prev() || el.parent()).child(el.i()).focus()
+    else if (e.key[5]=='L') (el.prev() || el).focus()
+    else if (e.key[5]=='R') (el.next() || el).focus()
+    else (el.parent().next() || el.parent()).child(el.i()).focus()
   }
 
 
-let state = { v: 0, input: '', sort: 'byId', dir: 'desc', hidden: [], done:'all', filter:'', tasks: [], id: 0 }
+let state = { v: 0, input: '', sort: 'byId', dir: 'desc',
+              hidden: ["views", "sorts", "filters"], done:'all',
+              filter:'', tasks: [], id: 0 }
 
 syncStore(), syncView()

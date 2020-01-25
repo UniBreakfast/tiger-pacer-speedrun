@@ -8,7 +8,7 @@
   <link rel=stylesheet href=style.css>
 </head>
 
-<body onkeydown=globalHK(event)>
+<body id=body onkeydown=globalHK(event)>
   <div id=inputBar>
     <button id=eye onclick=toggleView()>
       <img src=png/eye.png> <img src=png/hide.png>
@@ -45,7 +45,7 @@
       <button id=ifDone onclick=filterDone()>
         <img src=png/box.png> <img src=png/box.png> <img src=png/check.png>
       </button>
-      <input id=filterInp onkeydown=partFilter(this)>
+      <input id=filterInp onkeydown=partFilter(this) spellcheck=false>
       <button onclick=partFilter(this)> <img src=png/cross.png> </button>
     </div>
   </div>
