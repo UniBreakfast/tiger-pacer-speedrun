@@ -116,8 +116,7 @@ const
     day.slice(4,6)+'-'+day.slice(6))),
 
   Task = function (name, done, day=date2day()) {
-    done = done? 1 : 0,
-    assign(this, {id: ++state.id, name, done, day})
+    assign(this, {id: ++state.id, name, done: +done, day})
   },
 
   addTask = e => {
@@ -145,7 +144,7 @@ const
   markTask = el => {
     const done = el.parent().classList.contains('done'),
           id = el.parent().id
-    updState(()=> (getTask(id).done = !done, 1))
+    updState(()=> (getTask(id).done = +!done, 1))
     setTimeout(()=> {
       const el = tasks.first(`[id="${id}"]`)
       if (el) el.first().focus()
