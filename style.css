@@ -148,7 +148,7 @@ footer {
   text-align: center;
   color: #666;
 }
-footer>span { font-size: 1.2rem }
+footer>span>a { font-size: 1.2rem }
 footer a { color: inherit }
 
 .glass {

@@ -122,8 +122,8 @@ const
 
   clickAddTask = e => {
     if (['DIV', 'UL', 'LI', 'BODY'].includes(e.target.tagName))
-      updState(s=> (s.filter='',
-        s.tasks.push({id:++s.id, name:'', done: state.done=='yes'}))),
+      updState(s => (s.filter = '',
+        s.tasks.push({id: ++s.id, name: '', done: state.done=='yes'}))),
       tasks.last(`[id="${state.id}"]>span`).focus()
   },
 
@@ -159,7 +159,12 @@ const
       el.prev().focus()
     else if (e.key[5]=='R' && getSelection().getRangeAt(0).endOffset == el.innerText.length) el.next().focus()
     else if (e.key=='Escape') el.blur()
-    else if (e.key=='Enter') delete el.prevText, el.blur()
+    else if (e.key=='Enter') {
+      if (e.ctrlKey) updState(s => (s.filter = '', s.tasks.push(
+        {id: ++s.id, name: el.innerText.trim(), done: state.done=='yes'}))),
+        tasks.last(`[id="${state.id}"]>span`).focus()
+      else delete el.prevText, el.blur()
+    }
   },
 
   memoText = el => el.prevText = el.innerText,
