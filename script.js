@@ -1,7 +1,6 @@
 const
   c = console.log,  ls = localStorage,
-  { parse, stringify } = JSON,
-  { assign } = Object,
+  { parse, stringify } = JSON,  { assign } = Object,  { max } = Math,
   getId = obj => obj.id
 
 Event.prototype.pd = Event.prototype.preventDefault
@@ -207,9 +206,10 @@ const
   },
 
   loadState =()=> {
-    assign(new FileReader(), {onload: e => updState(()=>
-      state = assign(parse(e.target.result), {v: state.v}))})
-        .readAsText(stateLoader.files[0])
+    assign(new FileReader(), {onload: e => updState(()=> {
+      const loaded = parse(e.target.result), v = max(loaded.v, state.v)
+      return state = assign(loaded, {v})
+    })}).readAsText(stateLoader.files[0])
     stateLoader.val()
   },
 

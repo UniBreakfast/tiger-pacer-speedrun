@@ -72,6 +72,10 @@ input {
 .desc>img { transform: rotate(180deg) }
 
 #sorts>span { position: relative }
+#sort {
+  text-decoration: underline;
+  text-decoration-skip-ink: none;
+}
 #sortSel {
   top: -1rem;
   display: flex;
