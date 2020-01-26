@@ -163,7 +163,7 @@ const
     if (e.key[5]=='L' && !getSelection().getRangeAt(0).endOffset)
       el.prev().focus()
     else if (e.key[5]=='R' && getSelection().getRangeAt(0).endOffset == el.innerText.length) el.next().focus()
-    else if (e.key=='Escape') el.blur()
+    // else if (e.key=='Escape') el.blur()
     else if (e.key=='Enter') {
       if (e.ctrlKey) updState(s => (s.filter = '',
         s.tasks.push(new Task(el.innerText.trim(), state.done=='yes')))),
@@ -190,12 +190,13 @@ const
     s.done = s.done=='all'? 'not' : s.done=='not'? 'yes' : 'all'),
 
   globalHK = e => {
-    if (e.key=='Enter' && e.target==body) setTimeout(clickAddTask,0, e)
+    const el = e.target
+    if (e.key=='Enter' && el==body) setTimeout(clickAddTask,0, e)
+    else if (e.key=='Escape') el.blur()
     else if ('sыі'.includes(e.key) && e.ctrlKey) e.pd(), saveState()
     else if ('lд'.includes(e.key) && e.ctrlKey) e.pd(), stateLoader.click()
-    else if (e.key.includes('Arrow') && (e.target==body ||
-      (e.target.parent('#tasks') && (e.target.id!='task' ||
-        !e.key.endsWith('t'))))) e.pd(), arrowMove(e)
+    else if (e.key.includes('Arrow') && (el==body || (el.parent('#tasks') &&
+      (el.id!='task' || !e.key.endsWith('t'))))) e.pd(), arrowMove(e)
   },
 
   saveState =()=> {

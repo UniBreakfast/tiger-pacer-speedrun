@@ -2,14 +2,24 @@
 
 @media (orientation: portrait) { html { font-size: 2vw } }
 
-body, input, button {
+* {
+  border-radius: .3rem;
+  outline: none;
+}
+*:focus {
+  box-shadow: 0 0 .5rem .3rem #f80, inset 0 0 .3rem #f80;
+}
+
+body, input, button, span {
   font: 1.5rem Trebuchet MS, Helvetica, Arial, sans-serif;
+  outline: none;
 }
 
 body {
   margin: 0;
   padding: 3rem;
   height: 100vh;
+  background: #fed;
   box-sizing: border-box;
 }
 
@@ -42,11 +52,6 @@ input {
 }
 
 #inputBar>* { margin: .4rem }
-#inputBar>button {
-  width: 2.1rem;
-  height: 2.1rem;
-  padding: 0;
-}
 #inputBar, #view>div {
   display: flex;
   align-items: center;
@@ -113,6 +118,7 @@ input {
   min-height: 4rem;
   width: fit-content;
   min-width: 30.6rem;
+  background: white;
   border: .1rem solid;
   border-radius: 2rem;
 }
@@ -137,11 +143,8 @@ input {
 #tasks>li:not(.done)>button>img:nth-child(2) { display: none }
 #tasks>li.done>span { text-decoration: line-through #4b0a }
 #tasks>li { display: flex;  align-items: center }
-#tasks>li>button:last-child>img {
-  width: 1rem;
-  height: 1rem;
-  margin-top: .2rem;
-}
+#tasks>li>button:last-child { margin-top: .2rem }
+#tasks>li>button:last-child>img { width: 1rem; height: 1rem }
 
 #statusBar { padding-left: 2rem }
 
