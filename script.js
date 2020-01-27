@@ -258,7 +258,13 @@ const
     else if (e.key[5]=='L') (el.prev() || el).focus()
     else if (e.key[5]=='R') (el.next() || el).focus()
     else (el.parent().next() || el.parent()).child(el.i()).focus()
-  }
+  },
+
+  //////////////////////////////////
+  daySwitch =()=> [days, dates].forEach(div => div.classList.toggle('hidden')),
+  toggleInps = el =>
+    [el.prev(), el.last()].forEach(el => el.classList.toggle('hidden'))
+
 
 
 let state = { v: 0, input: '', sort: 'byId', dir: 'desc',

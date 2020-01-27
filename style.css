@@ -3,8 +3,9 @@
 @media (orientation: portrait) { html { font-size: 2vw } }
 
 * {
-  border-radius: .3rem;
   outline: none;
+  border-radius: .3rem;
+  text-decoration-skip-ink: none;
 }
 *:focus {
   box-shadow: 0 0 .5rem .3rem #f80, inset 0 0 .3rem #f80;
@@ -78,10 +79,10 @@ input {
 #sorts>span { position: relative }
 #sort {
   text-decoration: underline;
-  text-decoration-skip-ink: none;
 }
 #sortSel {
   top: -1rem;
+  z-index: 2;
   display: flex;
   padding: .3rem 0;
   position: absolute;
@@ -109,9 +110,31 @@ input {
   height: 1rem;
 }
 
-#dates input {
-  width: 7rem;
+#filters>div { position: relative }
+#filters>div>button { text-decoration: underline }
+#filters>div>span {
+  z-index: 2;
+  top: -.6rem;
+  left: -9rem;
+  display: flex;
+  position: absolute;
+  border: .1rem solid;
+  background: white;
+  align-items: center;
+  padding: .3rem .5rem;
 }
+#filters>div>span>span { position: relative }
+#filters>div>span button { position: absolute;  top: .4rem }
+#filters>div>span button:nth-child(2) { left: -.2rem }
+#filters>div>span button:nth-child(3) { right: .5rem }
+#filters>div>span button:last-child { right: 0 }
+#filters>div>span input {
+  padding-right: 1.2rem;
+  text-align: center;
+  margin: 0 .3rem;
+  width: 8.6rem;
+}
+#filters>#days>span input { width: 4rem }
 
 #taskList {
   overflow: auto;
@@ -168,6 +191,7 @@ footer a { color: inherit }
   left: 0;
   right: 0;
   bottom: 0;
+  z-index: 1;
   position: fixed;
 }
 

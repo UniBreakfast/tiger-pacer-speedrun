@@ -47,22 +47,62 @@
       </button>
       <input id=filterInp onkeydown=partFilter(this) spellcheck=false>
       <button onclick=partFilter(this)> <img src=png/cross.png> </button>
-      <div id=days>
-        <button>дни</button>
+      <div id=days class=hidden>
+        <button onclick=daySwitch()>дни</button>
+        <span id=daysInps class=hidden>
+          прошлые
+          <span>
+            <input type="text">
+            <button>◁</button>
+            <button>▷</button>
+            <button>⋮</button>
+          </span>
+          следующие
+          <span>
+            <input type="text">
+            <button>◁</button>
+            <button>▷</button>
+            <button>⋮</button>
+          </span>
+        </span>
+        <button onclick=toggleInps(this)>
+          <span id=daysAre>13 назад и 2 вперёд</span>
+          <div class='glass hidden'></div>
+        </button>
+        <!-- прошлые 13 и следующие 2
+        все прошлые и следующий
+        все
+        сегодня -->
       </div>
       <div id=dates>
-        <button>даты</button>
-        с
-        <span>
-          <input id=startDate type=date min=2020-01-15 max=2020-01-27>
-          <span id=startDateIs></span>
+        <button onclick=daySwitch()>даты</button>
+        <span id=datesInps class=hidden>
+          с
+          <span>
+            <input type="text">
+            <button>◁</button>
+            <button>▷</button>
+            <button>⋮</button>
+          </span>
+          до
+          <span>
+            <input type="text">
+            <button>◁</button>
+            <button>▷</button>
+            <button>⋮</button>
+          </span>
         </span>
-        по
-        <span>
-          <input id=endDate type=number>
-          <!-- <input id=endDate type=date> -->
-          <span id=endDateIs></span>
-        </span>
+        <button onclick=toggleInps(this)>
+          <span id=datesAre>с 14.02 до 20.03</span>
+          <div class='glass hidden'></div>
+        </button>
+        <!--с 14.02 до 20.03
+        с 31.12.2019 до 31.01.2020
+        c 01.01.2019
+        до 02.02.2021
+        25.02
+        03.2020 -->
+
       </div>
     </div>
   </div>
