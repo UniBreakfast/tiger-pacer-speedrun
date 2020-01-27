@@ -1,4 +1,4 @@
-        #sorts { margin-top: 0.2rem }
+        #sorts { margin-top: .2rem }
 
 @media (orientation: portrait) { html { font-size: 2vw } }
 
@@ -10,9 +10,8 @@
   box-shadow: 0 0 .5rem .3rem #f80, inset 0 0 .3rem #f80;
 }
 
-body, input, button, span {
+body, input, button {
   font: 1.5rem Trebuchet MS, Helvetica, Arial, sans-serif;
-  outline: none;
 }
 
 body {
@@ -101,13 +100,17 @@ input {
 #ifDone:hover { animation: enlarge .15s ease-out 2 alternate }
 
 #filterInp {
-  width: 10rem;
+  width: 7rem;
   padding: .1rem .5rem;
   margin-left: 1.4rem;
 }
 #filters>button:last-child>img {
   width: 1rem;
   height: 1rem;
+}
+
+#dates input {
+  width: 7rem;
 }
 
 #taskList {

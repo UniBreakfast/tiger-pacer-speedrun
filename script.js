@@ -133,7 +133,7 @@ const
   },
 
   delTask = el => {
-    if (tasks.all().length>1) {
+    if (tasks.all().length>1 && el.innerText) {
       const heir = (el.parent().next() || el.parent().prev()).id
       setTimeout(()=> tasks.child(`[id="${heir}"]`).last().focus(), 0)
     }
@@ -163,7 +163,6 @@ const
     if (e.key[5]=='L' && !getSelection().getRangeAt(0).endOffset)
       el.prev().focus()
     else if (e.key[5]=='R' && getSelection().getRangeAt(0).endOffset == el.innerText.length) el.next().focus()
-    // else if (e.key=='Escape') el.blur()
     else if (e.key=='Enter') {
       if (e.ctrlKey) updState(s => (s.filter = '',
         s.tasks.push(new Task(el.innerText.trim(), state.done=='yes')))),
