@@ -114,6 +114,9 @@ const
   day2date = day => (day='20'+day, new Date(day.slice(0,4)+'-'+
     day.slice(4,6)+'-'+day.slice(6))),
 
+  date2iso =(date=new Date)=> date.getFullYear()+'-'+
+    (date.getMonth()+1+'').padEnd(2,0)+'-'+(date.getDate()+'').padEnd(2,0),
+
   Task = function (name, done, day=date2day()) {
     assign(this, {id: ++state.id, name, done: +done, day})
   },

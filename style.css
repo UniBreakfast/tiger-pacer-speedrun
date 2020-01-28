@@ -118,13 +118,14 @@ input {
   left: -9rem;
   display: flex;
   position: absolute;
+  width: max-content;
   border: .1rem solid;
   background: white;
   align-items: center;
   padding: .3rem .5rem;
 }
 #filters>div>span>span { position: relative }
-#filters>div>span button { position: absolute;  top: .4rem }
+#filters>div>span>span>button { position: absolute;  top: .4rem }
 #filters>div>span button:nth-child(2) { left: -.2rem }
 #filters>div>span button:nth-child(3) { right: .5rem }
 #filters>div>span button:last-child { right: 0 }
@@ -160,15 +161,20 @@ input {
   background: none;
 }
 
+#tasks>li {
+  display: flex;
+  align-items: center;
+  margin: 0.4rem 0;
+}
 #tasks>li>button {
   position: relative;
   animation: none;
   margin: 0 .8rem;
 }
+#tasks>li>span { line-height: 1.5rem }
 #tasks>li>button>img:nth-child(2) { position: absolute }
 #tasks>li:not(.done)>button>img:nth-child(2) { display: none }
 #tasks>li.done>span { text-decoration: line-through #4b0a }
-#tasks>li { display: flex;  align-items: center }
 #tasks>li>button:last-child { margin-top: .2rem }
 #tasks>li>button:last-child>img { width: 1rem; height: 1rem }
 
