@@ -52,16 +52,16 @@
         <span id=daysInps class=hidden>
           дни прошлые
           <span>
-            <input type="text">
-            <button>◁</button>
-            <button>▷</button>
+            <input id=daysBefore>
+            <button onclick=moreDays(daysBefore)>◁</button>
+            <button onclick=lessDays(daysBefore)>▷</button>
             <button>⋮</button>
           </span>
           и следующие
           <span>
-            <input type="text">
-            <button>◁</button>
-            <button>▷</button>
+            <input id=daysAfter>
+            <button onclick=lessDays(daysAfter)>◁</button>
+            <button onclick=moreDays(daysAfter)>▷</button>
             <button>⋮</button>
           </span>
         </span>
@@ -79,16 +79,16 @@
         <span id=datesInps class=hidden>
           даты с
           <span>
-            <input type="text">
-            <button>◁</button>
-            <button>▷</button>
+            <input id=since>
+            <button onclick=prevDate(since)>◁</button>
+            <button onclick=nextDate(since)>▷</button>
             <button>⋮</button>
           </span>
           до
           <span>
-            <input type="text">
-            <button>◁</button>
-            <button>▷</button>
+            <input id=till>
+            <button onclick=prevDate(till)>◁</button>
+            <button onclick=nextDate(till)>▷</button>
             <button>⋮</button>
           </span>
         </span>

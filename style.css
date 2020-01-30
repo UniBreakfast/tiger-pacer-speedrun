@@ -102,23 +102,19 @@ input {
 
 #filterInp {
   width: 7rem;
-  padding: .1rem .5rem;
   margin-left: 1.4rem;
+  padding: .1rem .5rem;
 }
-#filters>button:last-child>img {
-  width: 1rem;
-  height: 1rem;
-}
-
-#filters>div { position: relative }
+#filters>button:nth-child(4)>img { width: 1rem; height: 1rem }
 #filters>div>button { text-decoration: underline }
+#filters>div { position: relative }
 #filters>div>span {
   z-index: 2;
   top: -.6rem;
   left: -9rem;
   display: flex;
-  position: absolute;
   width: max-content;
+  position: absolute;
   border: .1rem solid;
   background: white;
   align-items: center;

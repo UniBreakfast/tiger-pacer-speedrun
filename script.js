@@ -1,6 +1,6 @@
 const
   c = console.log,  ls = localStorage,
-  { parse, stringify } = JSON,  { assign } = Object,  { max } = Math,
+  { parse, stringify } = JSON,  { assign } = Object,  { min, max } = Math,
   getId = obj => obj.id
 
 Event.prototype.pd = Event.prototype.preventDefault
@@ -75,7 +75,11 @@ const
     sort.in(sortSel.child('#'+state.sort).innerText)
     filterInp.val(state.filter)
     ifDone.className = state.done
-    const condFn = state.done=='all'? Boolean :
+    ![dates, days].map(el => el.id==state.only? show(el) : hide(el))
+    daysBefore.val(state.days[0]||'все'), daysAfter.val(state.days[1]||'все')
+    since.val(state.dates[0]||'начала'), till.val(state.dates[1]||'конца')
+    const [minDate, maxDate] = minMaxDate()
+          condFn = state.done=='all'? Boolean :
             task => task.done==(state.done=='yes'),
           prop = state.sort.slice(2).toLowerCase(),
           desc = state.dir? -1 : 1,
@@ -83,6 +87,7 @@ const
           shown = state.tasks.filter(condFn).filter(state.filter?
             task => task.name.toLowerCase().includes(state.filter) : Boolean)
     tasks.in().append(...shown.sort(sortFn).map(buildTaskEl))
+    ![since, till].map(el => [el.min, el.max] = [minDate, maxDate])
     updStatusBar(shown)
     view.v = state.v
   },
@@ -108,14 +113,53 @@ const
 
   getTask = id => state.tasks.find(task => task.id==id),
 
-  date2day =(date=new Date)=> +((date.getYear()%100+'').padEnd(2,0)+
-    (date.getMonth()+1+'').padEnd(2,0)+(date.getDate()+'').padEnd(2,0)),
+  date2day =(date=new Date)=> +((date.getYear()%100+'').padStart(2,0)+
+    (date.getMonth()+1+'').padStart(2,0)+(date.getDate()+'').padStart(2,0)),
 
-  day2date = day => (day='20'+day, new Date(day.slice(0,4)+'-'+
-    day.slice(4,6)+'-'+day.slice(6))),
+  day2iso = day => (day='20'+day,
+    day.slice(0,4)+'-'+day.slice(4,6)+'-'+day.slice(6)),
 
   date2iso =(date=new Date)=> date.getFullYear()+'-'+
-    (date.getMonth()+1+'').padEnd(2,0)+'-'+(date.getDate()+'').padEnd(2,0),
+    (date.getMonth()+1+'').padStart(2,0)+'-'+(date.getDate()+'').padStart(2,0),
+
+  minMaxDate =()=> {
+    const days = state.tasks.map(task => task.day)
+    return [day2iso(min(...days)), day2iso(max(...days))]
+  },
+
+  shift =(isoDate, days=1)=> date2iso(new Date(+new Date(isoDate)+864e5*days)),
+
+  prevDate = el => {
+    updState(s => {
+      if (el==since) {
+        if (s.dates[0]==el.min) return s.dates[0]='начала'
+        else if (s.dates[0]=='начала') return s.dates[0]=el.min
+      } else if (el==till && s.dates[1]=='конца') return s.dates[1]=el.max
+      const prev = shift(el.value, -1)
+      s.dates[+(el==till)] = prev<el.min? el.min : prev
+      if (s.dates[0]!='начала' && s.dates[0]>s.dates[1] &&
+        s.dates[0]!=since.min)  s.dates[0] = s.dates[1]
+      return 1
+    })
+  },
+  nextDate = el => {
+    updState(s => {
+      if (el==since && s.dates[0]=='начала') return s.dates[0]=el.min
+      if (el==till && s.dates[1]==el.max) return s.dates[1]='конца'
+      const next = shift(el.value)
+      s.dates[+(el==till)] = next>el.max? el.max : next
+      if (s.dates[0]!='начала' && s.dates[0]>s.dates[1] && s.dates[1]!=till.max)
+        s.dates[1] = s.dates[0]
+      return 1
+    })
+  },
+  jumpDate = el => {
+    if (el==since) {
+
+    }
+  },
+  lessDays = el => {},
+  moreDays = el => {},
 
   Task = function (name, done, day=date2day()) {
     assign(this, {id: ++state.id, name, done: +done, day})
@@ -264,7 +308,8 @@ const
   },
 
   //////////////////////////////////
-  daySwitch =()=> [days, dates].forEach(div => div.classList.toggle('hidden')),
+  daySwitch =()=> updState(s => s.only = s.only=='days'? 'dates':'days'),
+
   toggleInps = el =>
     [el.prev(), el.last()].forEach(el => el.classList.toggle('hidden'))
 
@@ -272,6 +317,6 @@ const
 
 let state = { v: 0, input: '', sort: 'byId', dir: 'desc',
               hidden: ["views", "sorts", "filters"], done:'all',
-              filter:'', tasks: [], id: 0 }
+              filter:'', only: 'days', days: [], dates: [], tasks: [], id: 0 }
 
 syncStore(), syncView()
