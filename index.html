@@ -45,10 +45,16 @@
       <button id=ifDone onclick=filterDone()>
         <img src=png/box.png> <img src=png/box.png> <img src=png/check.png>
       </button>
-      <input id=filterInp onkeydown=partFilter(this) spellcheck=false>
-      <button onclick=partFilter(this)> <img src=png/cross.png> </button>
+      <span>
+        <input id=filterInp onkeydown=partFilter(this) spellcheck=false>
+        <button onclick=partFilter(this)> <img src=png/cross.png> </button>
+      </span>
       <div id=days class=hidden>
-        <button onclick=daySwitch()>дни</button>
+        <button onclick=daySwitch()>дни
+        </button><button onclick=toggleInps(this)>
+          <span id=daysAre></span>
+          <div class='glass hidden'></div>
+        </button>
         <span id=daysInps class=hidden>
           дни прошлые
           <span>
@@ -64,19 +70,15 @@
             <button onclick=moreDays(daysAfter,event)>▷</button>
             <button onclick=jumpDays(daysAfter)>⋮</button>
           </span>
-          <span id=daysTotal total="70 дней (2+ месяца)">Σ</span>
+          <span id=daysTotal>Σ</span>
         </span>
-        <button onclick=toggleInps(this)>
-          <span id=daysAre>13 назад и 2 вперёд</span>
-          <div class='glass hidden'></div>
-        </button>
-        <!-- прошлые 13 и следующие 2
-        все прошлые и следующий
-        все
-        сегодня -->
       </div>
       <div id=dates>
-        <button onclick=daySwitch()>даты</button>
+        <button onclick=daySwitch()>даты
+        </button><button onclick=toggleInps(this)>
+          <span id=datesAre>с 14.02 до 20.03</span>
+          <div class='glass hidden'></div>
+        </button>
         <span id=datesInps class=hidden>
           даты с
           <span>
@@ -92,12 +94,8 @@
             <button onclick=nextDate(till,event)>▷</button>
             <button onclick=jumpDate(till)>⋮</button>
           </span>
-          <span id=datesTotal total="70 дней (2+ месяца)">Σ</span>
+          <span id=datesTotal data-count="70 дней (2+ месяца)">Σ</span>
         </span>
-        <button onclick=toggleInps(this)>
-          <span id=datesAre>с 14.02 до 20.03</span>
-          <div class='glass hidden'></div>
-        </button>
         <!--с 14.02 до 20.03
         с 31.12.2019 до 31.01.2020
         c 01.01.2019

@@ -76,7 +76,7 @@ const
     filterInp.val(state.filter)
     ifDone.className = state.done
     ![dates, days].map(el => el.id==state.only? show(el) : hide(el))
-    updDaysBar()
+    updDaysBar(), updDaysTotal()
     daysBefore.val(state.days[0]), daysAfter.val(state.days[1])
     since.val(state.dates[0]||'начала'), till.val(state.dates[1]||'конца')
     const [minDate, maxDate] = minMaxDate(),
@@ -234,7 +234,7 @@ const
       else s.days[i]='все'
       return 1
     })
-  }
+  },
 
   Task = function (name, done, day=date2day()) {
     assign(this, {id: ++state.id, name, done: +done, day})
@@ -382,6 +382,14 @@ const
       ', сегодня, завтра' : ` и ${b} вперёд`}` : `прошлые ${a} и ${b=='все'?
       'все будущие' : b==0? 'сегодня' : b==1? 'до завтра' : `${b} вперёд`}`)
   },
+  updDaysTotal =()=> {
+    const [a, b] = state.days
+    daysTotal.dataset.count = a=='все'&&b=='все'? 'без фильтрации' : a=='все'?
+      `${b+1}+ дней${b>5? ` (${(b+2)/7|0}${(b+2)%7? '+':''} недель)`:''}` :
+      b=='все'? `${a+1}+ дней${a>5? ` (${(a+2)/7|0}${(a+2)%7? '+':''} недель)`
+      :''}` : `${a+1+b} дней${a+1+b>6? ` (${(a+1+b)/7|0}${(a+1+b)%7? '+':''
+      } недель)`:''}`
+  },
 
   arrowMove = e => {
     if (e.target==body) tasks.child((taskList.scrollTop+taskList.clientHeight/2)
@@ -398,7 +406,7 @@ const
   daySwitch =()=> updState(s => s.only = s.only=='days'? 'dates':'days'),
 
   toggleInps = el =>
-    [el.prev(), el.last()].forEach(el => el.classList.toggle('hidden'))
+    [el.next(), el.last()].forEach(el => el.classList.toggle('hidden'))
 
 
 
