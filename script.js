@@ -122,9 +122,14 @@ const
   date2iso =(date=new Date)=> date.getFullYear()+'-'+
     (date.getMonth()+1+'').padStart(2,0)+'-'+(date.getDate()+'').padStart(2,0),
 
+  dotDateFix = str => str.replace(/^(\d{1,2})\.(\d{1,2})/, '$2.$1.')
+    .replace(/^(\d{1,2})$/, `${new Date().getMonth()+1}.$1.`)
+    .replace(/\.$/, '.'+new Date().getFullYear()).replace('..', '.'),
+
   minMaxDate =()=> {
     const days = state.tasks.map(task => task.day)
-    return [day2iso(min(...days)), day2iso(max(...days))]
+    return [day2iso(min(...days)),
+            day2iso(max(...days, date2day(new Date(shift(date2iso(), 7)))))]
   },
 
   shift =(isoDate, days=1)=> date2iso(new Date(+new Date(isoDate)+864e5*days)),
@@ -154,9 +159,51 @@ const
     })
   },
   jumpDate = el => {
-    if (el==since) {
-
+    updState(s => {
+      if (el!=till) {
+        if (s.dates[0]=='начала') {
+          s.dates[0]=date2iso()
+          if (s.dates[1]<s.dates[0]) s.dates[1]=s.dates[0]
+        } else if (s.dates[0]==date2iso() && s.dates[0]!=s.dates[1])
+          s.dates[0] = s.dates[1]=='конца'? el.max : s.dates[1]
+        else s.dates[0] = 'начала'
+      } else {
+        if (s.dates[1]=='конца') {
+          s.dates[1]=date2iso()
+          if (s.dates[1]<s.dates[0] && s.dates[0]!='начала')
+            s.dates[0] = s.dates[1]
+        } else if (s.dates[1]==date2iso() && s.dates[0]!=s.dates[1])
+          s.dates[1] = s.dates[0]=='начала'? el.min : s.dates[0]
+        else s.dates[1] = 'конца'
+      }
+      return 1
+    })
+  },
+  typedDate = e => {
+    if (e.key && e.key!='Enter') return
+    const el = e.key? e.target : e
+    if (el!=till) {
+      if (el.value==state.dates[0]) return
+      if ('начала'.startsWith(el.value) || el.value.startsWith('начала'))
+        updState(s => s.dates[0] = 'начала')
+      else {
+        const date = new Date(dotDateFix(el.value))
+        if (!+date) el.value = state.dates[0]
+        else updState(s => (s.dates[0] = date2iso(date),
+          s.dates[1] = s.dates[+(s.dates[1]>s.dates[0])]))
+      }
+    } else {
+      if (el.value==state.dates[1]) return
+      if ('конца'.startsWith(el.value) || el.value.startsWith('конца'))
+        updState(s => s.dates[1] = 'конца')
+      else {
+        const date = new Date(dotDateFix(el.value))
+        if (!+date) el.value = state.dates[1]
+        else updState(s => (s.dates[1] = date2iso(date), s.dates[0] =
+          s.dates[+(s.dates[1]<s.dates[0] && s.dates[0]!='начала')]))
+      }
     }
+    c(el.value)
   },
   lessDays = el => {},
   moreDays = el => {},
@@ -306,6 +353,8 @@ const
     else if (e.key[5]=='R') (el.next() || el).focus()
     else (el.parent().next() || el.parent()).child(el.i()).focus()
   },
+
+  enterBlur = e => e.key=='Enter'? e.target.blur() :0,
 
   //////////////////////////////////
   daySwitch =()=> updState(s => s.only = s.only=='days'? 'dates':'days'),

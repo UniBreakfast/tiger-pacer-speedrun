@@ -86,7 +86,7 @@ input {
   display: flex;
   padding: .3rem 0;
   position: absolute;
-  background: white;
+  background: #f8e7d6;
   border-radius: .3rem;
   border: 0.1rem solid;
   flex-direction: column;
@@ -116,7 +116,7 @@ input {
   width: max-content;
   position: absolute;
   border: .1rem solid;
-  background: white;
+  background: #f8e7d6;
   align-items: center;
   padding: .3rem .5rem;
 }
@@ -132,6 +132,22 @@ input {
   width: 8.6rem;
 }
 #filters>#days>span input { width: 4rem }
+#datesTotal {
+  cursor: help;
+}
+#datesTotal:hover:after {
+  content: attr(total);
+  position: absolute;
+  right: 0;
+  top: 2.25rem;
+  width: max-content;
+  display: block;
+  border: .1rem solid;
+  border-top: none;
+  background: #f8e7d6;
+  border-radius: 0 0 .4rem .4rem;
+  padding: .3rem .5rem;
+}
 
 #taskList {
   overflow: auto;

@@ -79,18 +79,19 @@
         <span id=datesInps class=hidden>
           даты с
           <span>
-            <input id=since>
+            <input id=since onchange=typedDate(this) onkeydown=enterBlur(event)>
             <button onclick=prevDate(since)>◁</button>
             <button onclick=nextDate(since)>▷</button>
-            <button>⋮</button>
+            <button onclick=jumpDate(since)>⋮</button>
           </span>
           до
           <span>
-            <input id=till>
+            <input id=till onchange=typedDate(this) onkeydown=enterBlur(event)>
             <button onclick=prevDate(till)>◁</button>
             <button onclick=nextDate(till)>▷</button>
-            <button>⋮</button>
+            <button onclick=jumpDate(till)>⋮</button>
           </span>
+          <span id=datesTotal total="70 дней (2+ месяца)">Σ</span>
         </span>
         <button onclick=toggleInps(this)>
           <span id=datesAre>с 14.02 до 20.03</span>
