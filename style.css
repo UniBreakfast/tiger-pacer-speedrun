@@ -132,14 +132,14 @@ input {
   width: 8.6rem;
 }
 #filters>#days>span input { width: 4rem }
-#datesTotal {
+#daysTotal, #datesTotal {
   cursor: help;
 }
-#datesTotal:hover:after {
+#daysTotal:hover:after, #datesTotal:hover:after {
   content: attr(total);
   position: absolute;
   right: 0;
-  top: 2.25rem;
+  top: 2.15rem;
   width: max-content;
   display: block;
   border: .1rem solid;

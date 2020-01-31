@@ -53,17 +53,18 @@
           дни прошлые
           <span>
             <input id=daysBefore>
-            <button onclick=moreDays(daysBefore)>◁</button>
-            <button onclick=lessDays(daysBefore)>▷</button>
-            <button>⋮</button>
+            <button onclick=moreDays(daysBefore,event)>◁</button>
+            <button onclick=lessDays(daysBefore,event)>▷</button>
+            <button onclick=jumpDays(daysBefore)>⋮</button>
           </span>
           и следующие
           <span>
             <input id=daysAfter>
-            <button onclick=lessDays(daysAfter)>◁</button>
-            <button onclick=moreDays(daysAfter)>▷</button>
-            <button>⋮</button>
+            <button onclick=lessDays(daysAfter,event)>◁</button>
+            <button onclick=moreDays(daysAfter,event)>▷</button>
+            <button onclick=jumpDays(daysAfter)>⋮</button>
           </span>
+          <span id=daysTotal total="70 дней (2+ месяца)">Σ</span>
         </span>
         <button onclick=toggleInps(this)>
           <span id=daysAre>13 назад и 2 вперёд</span>
@@ -80,15 +81,15 @@
           даты с
           <span>
             <input id=since onchange=typedDate(this) onkeydown=enterBlur(event)>
-            <button onclick=prevDate(since)>◁</button>
-            <button onclick=nextDate(since)>▷</button>
+            <button onclick=prevDate(since,event)>◁</button>
+            <button onclick=nextDate(since,event)>▷</button>
             <button onclick=jumpDate(since)>⋮</button>
           </span>
           до
           <span>
             <input id=till onchange=typedDate(this) onkeydown=enterBlur(event)>
-            <button onclick=prevDate(till)>◁</button>
-            <button onclick=nextDate(till)>▷</button>
+            <button onclick=prevDate(till,event)>◁</button>
+            <button onclick=nextDate(till,event)>▷</button>
             <button onclick=jumpDate(till)>⋮</button>
           </span>
           <span id=datesTotal total="70 дней (2+ месяца)">Σ</span>

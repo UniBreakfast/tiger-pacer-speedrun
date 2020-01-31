@@ -76,9 +76,9 @@ const
     filterInp.val(state.filter)
     ifDone.className = state.done
     ![dates, days].map(el => el.id==state.only? show(el) : hide(el))
-    daysBefore.val(state.days[0]||'все'), daysAfter.val(state.days[1]||'все')
+    daysBefore.val(state.days[0]), daysAfter.val(state.days[1])
     since.val(state.dates[0]||'начала'), till.val(state.dates[1]||'конца')
-    const [minDate, maxDate] = minMaxDate()
+    const [minDate, maxDate] = minMaxDate(),
           condFn = state.done=='all'? Boolean :
             task => task.done==(state.done=='yes'),
           prop = state.sort.slice(2).toLowerCase(),
@@ -134,24 +134,24 @@ const
 
   shift =(isoDate, days=1)=> date2iso(new Date(+new Date(isoDate)+864e5*days)),
 
-  prevDate = el => {
+  prevDate =(el, e)=> {
     updState(s => {
       if (el==since) {
         if (s.dates[0]==el.min) return s.dates[0]='начала'
         else if (s.dates[0]=='начала') return s.dates[0]=el.min
       } else if (el==till && s.dates[1]=='конца') return s.dates[1]=el.max
-      const prev = shift(el.value, -1)
+      const prev = shift(el.value, e.shiftKey? -30 : -1)
       s.dates[+(el==till)] = prev<el.min? el.min : prev
       if (s.dates[0]!='начала' && s.dates[0]>s.dates[1] &&
         s.dates[0]!=since.min)  s.dates[0] = s.dates[1]
       return 1
     })
   },
-  nextDate = el => {
+  nextDate =(el, e)=> {
     updState(s => {
       if (el==since && s.dates[0]=='начала') return s.dates[0]=el.min
       if (el==till && s.dates[1]==el.max) return s.dates[1]='конца'
-      const next = shift(el.value)
+      const next = shift(el.value, e.shiftKey? 30 : 1)
       s.dates[+(el==till)] = next>el.max? el.max : next
       if (s.dates[0]!='начала' && s.dates[0]>s.dates[1] && s.dates[1]!=till.max)
         s.dates[1] = s.dates[0]
@@ -205,8 +205,35 @@ const
     }
     c(el.value)
   },
-  lessDays = el => {},
-  moreDays = el => {},
+  lessDays =(el, e)=> {
+    updState(s => {
+      const i = [daysBefore, daysAfter].indexOf(el)
+      s.days[i] = s.days[i]=='все'? 99 : s.days[i]>0?
+        s.days[i]-(e.shiftKey&&s.days[i]>9? 10 : 1) : 0
+      return 1
+    })
+  },
+  moreDays =(el, e)=> {
+    updState(s => {
+      const i = [daysBefore, daysAfter].indexOf(el)
+      s.days[i] = s.days[i]=='все'? 100 : s.days[i]<999?
+        s.days[i]+(e.shiftKey&&s.days[i]<989? 10 : 1) : 999
+      return 1
+    })
+  },
+  jumpDays = el => {
+    updState(s => {
+      const i = [daysBefore, daysAfter].indexOf(el)
+      if (s.days[i]=='все') s.days[i]=0
+      else if (s.days[i]==0) s.days[i]=3
+      else if (s.days[i]==3) s.days[i]=7
+      else if (s.days[i]==7) s.days[i]=14
+      else if (s.days[i]==14) s.days[i]=31
+      else if (s.days[i]==31) s.days[i]=365
+      else s.days[i]='все'
+      return 1
+    })
+  }
 
   Task = function (name, done, day=date2day()) {
     assign(this, {id: ++state.id, name, done: +done, day})
@@ -344,6 +371,20 @@ const
     statusBar.in(line)
   },
 
+  updDaysBar =()=> {
+    // все (все-все)
+    // все по сей день (все-1)
+    // все по завтрашний день (все-1)
+    // все прошлые и 3 вперёд (все-3)
+    // все будущие (0-все)
+    // сегодня (0-0)
+    // вчера м сегодня (1-0)
+    // сегодня и завтра (0-1)
+    // со вчера и до завтра (1-1)
+    // вчера, сегодня, завтра (1-1)
+
+  },
+
   arrowMove = e => {
     if (e.target==body) tasks.child((taskList.scrollTop+taskList.clientHeight/2)
       * tasks.all().length / tasks.clientHeight |0).first().focus()
@@ -356,7 +397,6 @@ const
 
   enterBlur = e => e.key=='Enter'? e.target.blur() :0,
 
-  //////////////////////////////////
   daySwitch =()=> updState(s => s.only = s.only=='days'? 'dates':'days'),
 
   toggleInps = el =>
@@ -365,7 +405,12 @@ const
 
 
 let state = { v: 0, input: '', sort: 'byId', dir: 'desc',
-              hidden: ["views", "sorts", "filters"], done:'all',
-              filter:'', only: 'days', days: [], dates: [], tasks: [], id: 0 }
+              hidden: ["views", "sorts", "filters"], done:'all', filter:'',
+              only: 'days', days: ['все','все'], dates: ['начала','конца'],
+              id: 3, tasks: [
+                {id: 1, name: "Помыть посуду", done: 0, day: date2day()},
+                {id: 2, name: "Вынести мусор", done: 0, day: date2day()},
+                {id: 3, name: "Захватить мир", done: 0, day: date2day()},
+              ] }
 
 syncStore(), syncView()
