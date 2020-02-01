@@ -51,6 +51,24 @@ input {
   border-radius: .4rem;
 }
 
+hr {
+  border: none;
+  height: .1rem;
+  margin: .6rem;
+  overflow: visible;
+  position: relative;
+  border-top: .1rem solid;
+}
+hr:after {
+  padding: 0 0.3rem;
+  font-size: 1.3rem;
+  line-height: .4rem;
+  position: absolute;
+  background: white;
+  content: attr(data-day);
+  transform: translate(32rem, -0.3rem);
+}
+
 #inputBar>* { margin: .4rem }
 #inputBar, #view>div {
   display: flex;
@@ -85,6 +103,7 @@ input {
   z-index: 2;
   display: flex;
   padding: .3rem 0;
+  width: max-content;
   position: absolute;
   background: #f8e7d6;
   border-radius: .3rem;

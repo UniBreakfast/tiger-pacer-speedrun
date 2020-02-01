@@ -1,7 +1,8 @@
 const
   c = console.log,  ls = localStorage,
   { parse, stringify } = JSON,  { assign } = Object,  { min, max } = Math,
-  getId = obj => obj.id
+  getId = obj => obj.id,
+  crEl = tag => document.createElement(tag)
 
 Event.prototype.pd = Event.prototype.preventDefault
 
@@ -78,15 +79,32 @@ const
     ![dates, days].map(el => el.id==state.only? show(el) : hide(el))
     daysBefore.val(state.days[0]), daysAfter.val(state.days[1])
     since.val(state.dates[0]||'начала'), till.val(state.dates[1]||'конца')
-    const [minDate, maxDate] = minMaxDate(),
-          condFn = state.done=='all'? Boolean :
-            task => task.done==(state.done=='yes'),
-          prop = state.sort.slice(2).toLowerCase(),
-          desc = state.dir? -1 : 1,
-          sortFn =(a, b)=> a[prop]<b[prop]? 1*desc : -1*desc,
-          shown = state.tasks.filter(condFn).filter(state.filter?
-            task => task.name.toLowerCase().includes(state.filter) : Boolean)
+    const
+      [ minDate, maxDate ] = minMaxDate(),
+      condFn = state.done=='all'? Boolean :
+        task => task.done==(state.done=='yes'),
+      earliest = state.only=='days'? state.days[0]=='все'? 0 :
+        date2day(new Date(shift(date2iso(), -state.days[0]))) :
+          state.dates[0]=='начала'? 0 : date2day(new Date(state.dates[0])),
+      latest = state.only=='days'? state.days[1]=='все'? 0 :
+        date2day(new Date(shift(date2iso(), state.days[1]))) :
+          state.dates[1]=='конца'? 0 : date2day(new Date(state.dates[1])),
+      dayFn1 = earliest? task => task.day>=earliest : Boolean,
+      dayFn2 = latest? task => task.day<=latest : Boolean,
+      prop = state.sort.slice(2).toLowerCase(),
+      desc = state.dir? -1 : 1,
+      sortFn =(a, b)=> a[prop]<b[prop]? 1*desc : -1*desc,
+      shown = state.tasks.filter(condFn).filter(state.filter?
+        task => task.name.toLowerCase().includes(state.filter) : Boolean)
+        .filter(dayFn1).filter(dayFn2)
     tasks.in().append(...shown.sort(sortFn).map(buildTaskEl))
+    if (state.sort=='byDay') tasks.all().map((li, i, lis)=> {
+      if (i && li.day!=lis[i-1].day) {
+        const hr = crEl('hr')
+        hr.dataset.day = day2iso(li.day)
+        tasks.insertBefore(assign(hr), li)
+      }
+    })
     ![since, till].map(el => [el.min, el.max] = [minDate, maxDate])
     state.only=='days'? updDaysBar()||updDaysTotal() :
       updDatesBar()||updDatesTotal()
@@ -107,10 +125,10 @@ const
 
   lsv =()=> ls.state? +ls.state.match(/"v":(\d+)/)[1] : 0,
 
-  buildTaskEl =({id, name, done})=> {
+  buildTaskEl =({id, name, done, day})=> {
     task.innerText = name
     const clone = template.cloneNode(2)
-    clone.id = id
+    clone.id = id,  clone.day = day
     if (done) clone.classList.add('done')
     return clone
   },
@@ -395,20 +413,6 @@ const
       end6((a+1+b)/7|0)}` })`:''}`
   },
   updDatesBar =()=> {
-    // все (с начала до конца)
-    // все до 02.02.2021 (с начала)
-    // все c 01.01.2019 (до конца)
-
-    // 25.02 (один день, этот год)
-    // 25.02.2021 (один день)
-
-    // весь 03.2020 (один год, один месяц ровно)
-    // с 14 по 20.03 (один год, в один месяц, год этот)
-    // с 20 по 28.01.2020 (один год, в один месяц)
-    // с 14.02 до 20.03 (один год, разные месяцы, год этот)
-    // 31.12.2019 - 31.01.2020 (один год, разные месяцы)
-
-    // 31.12.2019 - 31.01.2020 (остальные)
     const [a, b] = state.dates, cY = new Date().getFullYear(),
           [aY,aM,aD] = a.match(/\d+/g)||[],  [bY,bM,bD] = b.match(/\d+/g)||[],
           [aDMY, aDM, aMY, bDMY, bDM] = [[aD,aM,aY], [aD,aM], [aM,aY],
