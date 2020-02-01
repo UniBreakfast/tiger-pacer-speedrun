@@ -58,14 +58,16 @@
         <span id=daysInps class=hidden>
           дни прошлые
           <span>
-            <input id=daysBefore>
+            <input id=daysBefore onchange=typedDay(this)
+              onkeydown=enterBlur(event)>
             <button onclick=moreDays(daysBefore,event)>◁</button>
             <button onclick=lessDays(daysBefore,event)>▷</button>
             <button onclick=jumpDays(daysBefore)>⋮</button>
           </span>
           и следующие
           <span>
-            <input id=daysAfter>
+            <input id=daysAfter onchange=typedDay(this)
+              onkeydown=enterBlur(event)>
             <button onclick=lessDays(daysAfter,event)>◁</button>
             <button onclick=moreDays(daysAfter,event)>▷</button>
             <button onclick=jumpDays(daysAfter)>⋮</button>
@@ -76,7 +78,7 @@
       <div id=dates>
         <button onclick=daySwitch()>даты
         </button><button onclick=toggleInps(this)>
-          <span id=datesAre>с 14.02 до 20.03</span>
+          <span id=datesAre></span>
           <div class='glass hidden'></div>
         </button>
         <span id=datesInps class=hidden>
@@ -96,13 +98,6 @@
           </span>
           <span id=datesTotal data-count="70 дней (2+ месяца)">Σ</span>
         </span>
-        <!--с 14.02 до 20.03
-        с 31.12.2019 до 31.01.2020
-        c 01.01.2019
-        до 02.02.2021
-        25.02
-        03.2020 -->
-
       </div>
     </div>
   </div>

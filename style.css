@@ -137,6 +137,11 @@ input {
   width: 8.6rem;
 }
 #filters>#days>span input { width: 4rem }
+#filters #daysBefore { padding: .3rem .5rem .3rem 1.2rem }
+#daysInps>span:first-child>button:nth-child(2) { left: .5rem }
+#daysInps>span:first-child>button:nth-child(3) { right: -.1rem }
+#daysInps>span:first-child>button:last-child { left: 0 }
+
 #daysTotal, #datesTotal {
   cursor: help;
 }

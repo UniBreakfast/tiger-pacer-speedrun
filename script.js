@@ -76,7 +76,6 @@ const
     filterInp.val(state.filter)
     ifDone.className = state.done
     ![dates, days].map(el => el.id==state.only? show(el) : hide(el))
-    updDaysBar(), updDaysTotal()
     daysBefore.val(state.days[0]), daysAfter.val(state.days[1])
     since.val(state.dates[0]||'начала'), till.val(state.dates[1]||'конца')
     const [minDate, maxDate] = minMaxDate(),
@@ -89,6 +88,10 @@ const
             task => task.name.toLowerCase().includes(state.filter) : Boolean)
     tasks.in().append(...shown.sort(sortFn).map(buildTaskEl))
     ![since, till].map(el => [el.min, el.max] = [minDate, maxDate])
+    state.only=='days'? updDaysBar()||updDaysTotal() :
+      updDatesBar()||updDatesTotal()
+    if (state.only=='days') updDaysBar(), updDaysTotal()
+    else updDatesBar(), updDatesTotal(minDate, maxDate)
     updStatusBar(shown)
     view.v = state.v
   },
@@ -180,9 +183,7 @@ const
       return 1
     })
   },
-  typedDate = e => {
-    if (e.key && e.key!='Enter') return
-    const el = e.key? e.target : e
+  typedDate = el => {
     if (el!=till) {
       if (el.value==state.dates[0]) return
       if ('начала'.startsWith(el.value) || el.value.startsWith('начала'))
@@ -204,36 +205,37 @@ const
           s.dates[+(s.dates[1]<s.dates[0] && s.dates[0]!='начала')]))
       }
     }
-    c(el.value)
   },
   lessDays =(el, e)=> {
     updState(s => {
-      const i = [daysBefore, daysAfter].indexOf(el)
-      s.days[i] = s.days[i]=='все'? 99 : s.days[i]>0?
-        s.days[i]-(e.shiftKey&&s.days[i]>9? 10 : 1) : 0
+      const i = [daysBefore, daysAfter].indexOf(el),  n = s.days[i]
+      s.days[i] = n=='все'? 99 : n>0? n-(e.shiftKey&&n>9? 10 : 1) : 0
       return 1
     })
   },
   moreDays =(el, e)=> {
     updState(s => {
-      const i = [daysBefore, daysAfter].indexOf(el)
-      s.days[i] = s.days[i]=='все'? 100 : s.days[i]<999?
-        s.days[i]+(e.shiftKey&&s.days[i]<989? 10 : 1) : 999
+      const i = [daysBefore, daysAfter].indexOf(el),  n = s.days[i]
+      s.days[i] = n=='все'? 100 : n<999? n+(e.shiftKey&&n<989? 10 : 1) : 999
       return 1
     })
   },
   jumpDays = el => {
     updState(s => {
-      const i = [daysBefore, daysAfter].indexOf(el)
-      if (s.days[i]=='все') s.days[i]=0
-      else if (s.days[i]==0) s.days[i]=3
-      else if (s.days[i]==3) s.days[i]=7
-      else if (s.days[i]==7) s.days[i]=14
-      else if (s.days[i]==14) s.days[i]=31
-      else if (s.days[i]==31) s.days[i]=365
-      else s.days[i]='все'
+      const i = [daysBefore, daysAfter].indexOf(el),  n = s.days[i]
+      s.days[i] = n=='все'? 0 : n==0? 3 : n==3? 7 : n==7? 14 : n==14? 31 : n==31? 365 : 'все'
       return 1
     })
+  },
+  typedDay = el => {
+    const i = [daysBefore, daysAfter].indexOf(el),  v = el.value
+    if (v==state.days[i]) return
+    if (v && ('все'.startsWith(v) || v.startsWith('все')))
+      updState(s => s.days[i] = 'все')
+    else {
+      if (+v||v==0) updState(s => (s.days[i] = +v<1? 0 : +v>999? 999 : +v|0, 1))
+      else el.value = state.days[i]
+    }
   },
 
   Task = function (name, done, day=date2day()) {
@@ -348,10 +350,12 @@ const
   partFilter = el => setTimeout(updState, 0,
     s => (s.filter = el.value.toLowerCase(), 1)),
 
-  ending1 = n => n>5&&n<21? '' : n%10==1? 'а' : n%10>1&&n%10<5? 'и' : '',
-  ending2 = n => n%10==1&&n!=11? 'и' : '',
-  ending3 = n => n%10==1&&n!=11? 'е' : 'ю',
-  ending4 = n => n>5&&n<21? 'ых' : n%10==1? 'ая' : n%10>1&&n%10<5? 'ые' : 'ых',
+  end1 = n => n>5&&n<21? '' : n%10==1? 'а' : n%10>1&&n%10<5? 'и' : '',
+  end2 = n => n%10==1&&n!=11? 'и' : '',
+  end3 = n => n%10==1&&n!=11? 'е' : 'ю',
+  end4 = n => n>5&&n<21? 'ых' : n%10==1? 'ая' : n%10>1&&n%10<5? 'ые' : 'ых',
+  end5 = n => n>5&&n<21? 'ней' : n%10==1? 'ень' : n%10>1&&n%10<5? 'ня' : 'ней',
+  end6 = n => n>5&&n<21? 'ь' : n%10==1? 'я' : n%10>1&&n%10<5? 'и' : 'ь',
 
   updStatusBar = tasks => {
     const total = state.tasks.length,  shown = tasks.length,
@@ -361,11 +365,11 @@ const
     if (!total) line = 'нет задач - самое время что-то запланировать!'
     else {
       if (!shown) line = 'нет задач, прошедших фильтры'
-      else if (!done) line = planned+` задач${ending1(planned)} ожида${
-        ending3(planned)}т выполнения`
-      else if (planned) line = planned+` из ${shown} задач${ending2(shown)
+      else if (!done) line = planned+` задач${end1(planned)} ожида${
+        end3(planned)}т выполнения`
+      else if (planned) line = planned+` из ${shown} задач${end2(shown)
         } ожидают выполнения`
-      else line = done+` выполненн${ending4(done)} задач`+ending1(done)
+      else line = done+` выполненн${end4(done)} задач`+end1(done)
       if (filtered) line += ` (${filtered} отфильтровано)`
       else if (!planned) line += ', добавьте новые!'
     }
@@ -385,10 +389,42 @@ const
   updDaysTotal =()=> {
     const [a, b] = state.days
     daysTotal.dataset.count = a=='все'&&b=='все'? 'без фильтрации' : a=='все'?
-      `${b+1}+ дней${b>5? ` (${(b+2)/7|0}${(b+2)%7? '+':''} недель)`:''}` :
-      b=='все'? `${a+1}+ дней${a>5? ` (${(a+2)/7|0}${(a+2)%7? '+':''} недель)`
-      :''}` : `${a+1+b} дней${a+1+b>6? ` (${(a+1+b)/7|0}${(a+1+b)%7? '+':''
-      } недель)`:''}`
+      `${b+1}+ дней${b>5? ` (${(b+2)/7|0}+ недель)`:''}` : b=='все'?
+      `${a+1}+ дней${a>5? ` (${(a+2)/7|0}+ недель)`:''}` : `${a+1+b} д${
+      end5(a+1+b)}${a+1+b>6? ` (${(a+1+b)/7|0}${(a+1+b)%7? '+ недель':` недел${
+      end6((a+1+b)/7|0)}` })`:''}`
+  },
+  updDatesBar =()=> {
+    // все (с начала до конца)
+    // все до 02.02.2021 (с начала)
+    // все c 01.01.2019 (до конца)
+
+    // 25.02 (один день, этот год)
+    // 25.02.2021 (один день)
+
+    // весь 03.2020 (один год, один месяц ровно)
+    // с 14 по 20.03 (один год, в один месяц, год этот)
+    // с 20 по 28.01.2020 (один год, в один месяц)
+    // с 14.02 до 20.03 (один год, разные месяцы, год этот)
+    // 31.12.2019 - 31.01.2020 (один год, разные месяцы)
+
+    // 31.12.2019 - 31.01.2020 (остальные)
+    const [a, b] = state.dates, cY = new Date().getFullYear(),
+          [aY,aM,aD] = a.match(/\d+/g)||[],  [bY,bM,bD] = b.match(/\d+/g)||[],
+          [aDMY, aDM, aMY, bDMY, bDM] = [[aD,aM,aY], [aD,aM], [aM,aY],
+            [bD,bM,bY], [bD,bM]].map(group => group.join('.'))
+    datesAre.in(a=='начала'? b=='конца'? 'все' : 'все до '+bDMY : b=='конца'?
+      'все c '+aDMY : a==b? aY==cY? aDM : aDMY : aY==bY? aM==bM? aD==1 &&
+      shift(b).slice(8)==1? 'весь '+aMY : aY==cY? 'c '+aD+' по '+bDM :
+      'c '+aD+' по '+bDMY : aY==cY? 'c '+aDM+' до '+bDM : aDMY+' - '+bDMY
+      : aDMY+' - '+bDMY)
+  },
+  updDatesTotal =(minDate, maxDate)=> {
+    const a = new Date(state.dates[0]=='начала'? minDate : state.dates[0]),
+          b = new Date(state.dates[1]=='конца'?  maxDate : state.dates[1]),
+          days = ((b-a)/864e5|0)+1,  weeks = days/7|0
+    datesTotal.dataset.count = days+` д${end5(days)}${weeks? ` (${weeks}${
+      days%7? '+ недель' : ` недел${end6(weeks)}`})` :''}`
   },
 
   arrowMove = e => {
