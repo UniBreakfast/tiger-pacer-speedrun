@@ -7,11 +7,13 @@ const
 Event.prototype.pd = Event.prototype.preventDefault
 
 assign(HTMLElement.prototype, {
-  next: function () { return this.nextElementSibling },
-  prev: function () { return this.previousElementSibling },
   in: function (str='') { this.innerHTML = str; return this },
   val: function (str='') { this.value = str; return this },
   parent: function (sel) { return sel? this.closest(sel) : this.parentNode },
+  next: function (sel) { return sel? this.sibs(sel)[this.i(sel)+1] :
+          this.nextElementSibling },
+  prev: function (sel) { return sel? this.sibs(sel)[this.i(sel)-1] :
+          this.previousElementSibling },
   all: function (sel) {
          return [...sel? this.querySelectorAll(sel) : this.children] },
   last: function (sel) {
@@ -20,9 +22,9 @@ assign(HTMLElement.prototype, {
            return sel? this.querySelector(sel) : this.firstElementChild },
   child: function (sel) { return typeof sel!='number'? this.first(sel) :
            this.children[sel<0? this.all().length+sel : sel] },
-  sibs: function (i) { return typeof i!='number'? this.parent().all() :
+  sibs: function (sel) { return typeof sel!='number'? this.parent().all(sel) :
           this.parent().child(i) },
-  i: function () { return this.sibs().indexOf(this) },
+  i: function (sel) { return this.sibs(sel).indexOf(this) },
 })
 
 // assign(Array.prototype, {
@@ -101,7 +103,7 @@ const
     if (state.sort=='byDay') tasks.all().map((li, i, lis)=> {
       if (i && li.day!=lis[i-1].day) {
         const hr = crEl('hr')
-        hr.dataset.day = day2iso(li.day)
+        hr.dataset.day = String(li.day).replace(/..(..)(..)/,'$2.$1')
         tasks.insertBefore(assign(hr), li)
       }
     })
@@ -138,6 +140,10 @@ const
   date2day =(date=new Date)=> +((date.getYear()%100+'').padStart(2,0)+
     (date.getMonth()+1+'').padStart(2,0)+(date.getDate()+'').padStart(2,0)),
 
+  iso2day = date => date2day(new Date(date)),
+
+  day2date = day => new Date(day2iso(day)),
+
   day2iso = day => (day='20'+day,
     day.slice(0,4)+'-'+day.slice(4,6)+'-'+day.slice(6)),
 
@@ -154,7 +160,9 @@ const
             day2iso(max(...days, date2day(new Date(shift(date2iso(), 7)))))]
   },
 
-  shift =(isoDate, days=1)=> date2iso(new Date(+new Date(isoDate)+864e5*days)),
+  shift =(date, days=1)=> typeof date=='string'?
+    date2iso(shift(new Date(date), days)) : typeof date=='number'?
+    date2day(shift(day2date(date), days)) : new Date(+date + 864e5*days),
 
   prevDate =(el, e)=> {
     updState(s => {
@@ -434,11 +442,22 @@ const
   arrowMove = e => {
     if (e.target==body) tasks.child((taskList.scrollTop+taskList.clientHeight/2)
       * tasks.all().length / tasks.clientHeight |0).first().focus()
-    const el = document.activeElement
-    if (e.key[5]=='U') (el.parent().prev() || el.parent()).child(el.i()).focus()
+    const el = document.activeElement,  id = el.parent().id,
+          dayShift = e.shiftKey && state.sort=='byDay' && el.id=='task'
+    if (e.key[5]=='U') {
+      if (dayShift)
+        updState(s => getTask(id).day = shift(getTask(id).day, s.dir? -1 : 1)),
+        tasks.child(`[id="${id}"]`).child(1).focus()
+      else (el.parent().prev('li') || el.parent()).child(el.i()).focus()
+    }
     else if (e.key[5]=='L') (el.prev() || el).focus()
     else if (e.key[5]=='R') (el.next() || el).focus()
-    else (el.parent().next() || el.parent()).child(el.i()).focus()
+    else {
+      if (dayShift)
+        updState(s => getTask(id).day = shift(getTask(id).day, s.dir? 1 : -1)),
+        tasks.child(`[id="${id}"]`).child(1).focus()
+      else (el.parent().next('li') || el.parent()).child(el.i()).focus()
+    }
   },
 
   enterBlur = e => e.key=='Enter'? e.target.blur() :0,

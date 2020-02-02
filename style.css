@@ -60,13 +60,13 @@ hr {
   border-top: .1rem solid;
 }
 hr:after {
-  padding: 0 0.3rem;
+  line-height: 0;
   font-size: 1.3rem;
-  line-height: .4rem;
   position: absolute;
   background: white;
+  padding: .4rem .3rem 0;
   content: attr(data-day);
-  transform: translate(32rem, -0.3rem);
+  transform: translate(35rem, -.3rem);
 }
 
 #inputBar>* { margin: .4rem }
@@ -121,7 +121,7 @@ hr:after {
 
 #filterInp {
   width: 7rem;
-  margin: 0 .3rem 0 1.2rem;
+  margin: 0 .3rem 0 .5rem;
   padding: .1rem 1.5rem .1rem .5rem;
 }
 #filters>span>button {
