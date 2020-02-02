@@ -317,8 +317,8 @@ const
       el.prev().focus()
     else if (e.key[5]=='R' && getSelection().getRangeAt(0).endOffset == el.innerText.length) el.next().focus()
     else if (e.key=='Enter') {
-      if (e.ctrlKey) updState(s => (s.filter = '',
-        s.tasks.push(new Task(el.innerText.trim(), state.done=='yes')))),
+      if (e.ctrlKey) updState(s => (s.filter = '', s.tasks.push(
+        new Task(el.innerText.trim(), state.done=='yes', shift(date2day()))))),
         tasks.last(`[id="${state.id}"]>span`).focus()
       else delete el.prevText, el.blur()
     }
