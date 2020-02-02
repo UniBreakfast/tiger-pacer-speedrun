@@ -59,14 +59,24 @@ hr {
   position: relative;
   border-top: .1rem solid;
 }
+hr:before {
+  top: -0.7rem;
+  left: -.5rem;
+  content: ' ';
+  height: 1.4rem;
+  display: block;
+  position: absolute;
+  width: calc(100% + 1rem);
+}
 hr:after {
+  top: -.3rem;
+  right: 6rem;
   line-height: 0;
   font-size: 1.3rem;
   position: absolute;
   background: white;
   padding: .4rem .3rem 0;
   content: attr(data-day);
-  transform: translate(35rem, -.3rem);
 }
 
 #inputBar>* { margin: .4rem }
@@ -86,7 +96,7 @@ hr:after {
 #eye.striked>img:last-child { display: none }
 #eye:not(.striked)>img:first-child { display: none }
 
-#view #tiger { margin-left: 2rem }
+#view #tiger { margin-left: 1.3rem }
 #tiger img {
   width: 2rem;
   height: 2rem;

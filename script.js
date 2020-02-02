@@ -277,8 +277,11 @@ const
   },
 
   clickAddTask = e => {
-    if (!['DIV', 'UL', 'LI', 'BODY'].includes(e.target.tagName)) return
-    updState(s => (s.filter='', s.tasks.push(new Task('', state.done=='yes'))))
+    const el = e.target,  tag = el.tagName
+    if (!['DIV', 'UL', 'LI', 'HR', 'BODY'].includes(tag)) return
+    const day = state.sort=='byDay'? tag=='LI'? el.day : tag=='HR'? el.next().day :0 :0
+    updState(s => (s.filter='',
+      s.tasks.push(new Task('', state.done=='yes', day||undefined))))
     tasks.last(`[id="${state.id}"]>span`).focus()
   },
 
@@ -469,7 +472,7 @@ const
 
 
 
-let state = { v: 0, input: '', sort: 'byId', dir: 'desc',
+let state = { v: 0, input: '', sort: 'byDay', dir: 'desc',
               hidden: ["views", "sorts", "filters"], done:'all', filter:'',
               only: 'days', days: ['все','все'], dates: ['начала','конца'],
               id: 3, tasks: [
