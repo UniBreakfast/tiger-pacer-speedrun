@@ -103,7 +103,8 @@ const
     if (state.sort=='byDay') tasks.all().map((li, i, lis)=> {
       if (i && li.day!=lis[i-1].day) {
         const hr = crEl('hr')
-        hr.dataset.day = String(li.day).replace(/..(..)(..)/,'$2.$1')
+        hr.dataset.day = (li.day==date2day()? 'сегодня \xa0':'') +
+          String(li.day).replace(/..(..)(..)/,'$2.$1')
         tasks.insertBefore(assign(hr), li)
       }
     })
