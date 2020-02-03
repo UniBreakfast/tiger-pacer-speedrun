@@ -289,9 +289,10 @@ const
 
   addTask = e => {
     if (e && e.key!='Enter') return
-    const name = input.value.trim(),  done = e && e.ctrlKey
+    const name = input.value.trim(),
+          day = e.shiftKey? shift(date2day()) : date2day()
     memoNot()
-    if (name) updState(s => (s.tasks.push(new Task(name, done)),
+    if (name) updState(s => (s.tasks.push(new Task(name, e.ctrlKey, day)),
       input.val(s.input = ''), 1))
   },
 
