@@ -69,6 +69,7 @@ const
 
   syncViewOnce =()=> {
     if (view.v==state.v) return
+    if (state.q && view.v+1==state.v) return quickSync()
     input.val(state.input)
     setTimeout(()=> {
       eye.classList[state.hidden[2]? 'remove':'add']('striked')
@@ -122,9 +123,23 @@ const
 
   [ syncView, stopSyncView ] = makeRepeatable(syncViewOnce, SYNC_VIEW_INTER),
 
-  updState = queryFn => {
+  quickSync =()=> {
+    if (state.q.input) input.val(state.q.input)
+    else if (state.q.done!=undefined)
+      tasks.child(`[id="${state.q.id}"]`).className = state.q.done? 'done':''
+    else if (state.q.name)
+      tasks.child(`[id="${state.q.id}>span"]`).in(state.q.name)
+    else {
+      const li = tasks.child(`[id="${state.q.id}"]`)
+      if (li.prev().id==li.next().id) li.prev().remove()
+      li.remove()
+    }
+    view.v = state.v
+  },
+
+  updState =(queryFn, quick)=> {
     syncStoreOnce()
-    if (queryFn(state)) ++state.v
+    if (queryFn(state)) state.q = quick||0, ++state.v
     syncView()
     syncStore()
   },
@@ -294,13 +309,14 @@ const
       const heir = (el.parent().next() || el.parent().prev()).id
       setTimeout(()=> tasks.child(`[id="${heir}"]`).last().focus(), 0)
     }
-    updState(s => s.tasks = s.tasks.filter(task => task.id!=el.parent().id))
+    const id = el.parent().id
+    updState(s => s.tasks = s.tasks.filter(task => task.id!=id), {id})
   },
 
   markTask = el => {
-    const done = el.parent().classList.contains('done'),
+    const done = +!el.parent().classList.contains('done'),
           id = el.parent().id
-    updState(()=> (getTask(id).done = +!done, 1))
+    updState(()=> (getTask(id).done = done, 1), {id, done})
     setTimeout(()=> {
       const el = tasks.first(`[id="${id}"]`)
       if (el) el.first().focus()
@@ -312,7 +328,7 @@ const
     const id = el.parent().id,  name = el.innerText.trim()
     if (!name) delTask(el)
     else if (name!=getTask(id).name)
-      updState(()=> (getTask(id).name = name, 1))
+      updState(()=> (getTask(id).name = name, 1), {id, name})
   },
 
   blurTask = e => {
@@ -330,8 +346,8 @@ const
 
   memoText = el => el.prevText = el.innerText,
 
-  memoVal = (el, val) => updState(()=>
-    (state[el.id] = val!=undefined? val : el.value, 1)),
+  memoVal = (el, val=el.value) => updState(s => (s[el.id] = val, 1),
+    {[el.id]: val}),
 
   [ memo, memoNot, memoNow ] = makeThrottled(memoVal, MEMO_THROTTLE),
 
