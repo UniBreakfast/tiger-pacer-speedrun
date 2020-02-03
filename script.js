@@ -128,7 +128,7 @@ const
     else if (state.q.done!=undefined)
       tasks.child(`[id="${state.q.id}"]`).className = state.q.done? 'done':''
     else if (state.q.name)
-      tasks.child(`[id="${state.q.id}>span"]`).in(state.q.name)
+      tasks.child(`[id="${state.q.id}"]>span`).in(state.q.name)
     else {
       const li = tasks.child(`[id="${state.q.id}"]`)
       if (li.prev().id==li.next().id) li.prev().remove()
@@ -386,8 +386,10 @@ const
     stateLoader.val()
   },
 
-  toggleSortSel = el =>
-    [el.next(), el.last()].map(el => el.classList.toggle('hidden')),
+  toggleModal =(el, e)=> {
+    [el.next(), el.last()].map(el => el.classList.toggle('hidden'))
+    if (e.target==el.last()) el.blur()
+  },
 
   selSort = el => updState(s => s['sort'+el.id.slice(-1)] = el.id.slice(0,-1),
     el.parent().prev().click()),
@@ -465,8 +467,11 @@ const
   },
 
   arrowMove = e => {
-    if (e.target==body) tasks.child((taskList.scrollTop+taskList.clientHeight/2)
-      * tasks.all().length / tasks.clientHeight |0).first().focus()
+    if (e.target==body) {
+      const middle = tasks.child((taskList.scrollTop+taskList.clientHeight/2)
+        * tasks.all().length / tasks.clientHeight |0)
+      !(middle.first() || middle.prev().first()).focus()
+    }
     const el = document.activeElement,  id = el.parent().id,
           dayShift = e.shiftKey && state.sort2=='byDay' && el.id=='task'
     if (e.key[5]=='U') {
@@ -487,10 +492,7 @@ const
 
   enterBlur = e => e.key=='Enter'? e.target.blur() :0,
 
-  daySwitch =()=> updState(s => s.only = s.only=='days'? 'dates':'days'),
-
-  toggleInps = el =>
-    [el.next(), el.last()].forEach(el => el.classList.toggle('hidden'))
+  daySwitch =()=> updState(s => s.only = s.only=='days'? 'dates':'days')
 
 
 

@@ -20,7 +20,9 @@
   <div id=view>
     <div id=views>
       <button onclick=hideBar(views)> <img src=png/eye.png> </button>
-      виды:
+      виды:<button id=capture onclick=saveView()>
+        <img src=png/shot.png>
+      </button>
     </div>
     <div id=sorts>
       <button onclick=hideBar(sorts)> <img src=png/eye.png> </button>
@@ -28,7 +30,7 @@
         <img src=png/tiger.png>
       </button>
       <span>
-        <button onclick=toggleSortSel(this)>
+        <button onclick=toggleModal(this,event)>
           <span id=sort1></span> <div class='glass hidden'></div>
         </button>
         <span id=sortSel1 class=hidden>
@@ -42,7 +44,7 @@
         <img src=png/tiger.png>
       </button>
       <span>
-        <button onclick=toggleSortSel(this)>
+        <button onclick=toggleModal(this,event)>
           <span id=sort2></span> <div class='glass hidden'></div>
         </button>
         <span id=sortSel2 class=hidden>
@@ -65,7 +67,7 @@
       </span>
       <div id=days class=hidden>
         <button onclick=daySwitch()>дни
-        </button><button onclick=toggleInps(this)>
+        </button><button onclick=toggleModal(this,event)>
           <span id=daysAre></span>
           <div class='glass hidden'></div>
         </button>
@@ -91,7 +93,7 @@
       </div>
       <div id=dates>
         <button onclick=daySwitch()>даты
-        </button><button onclick=toggleInps(this)>
+        </button><button onclick=toggleModal(this,event)>
           <span id=datesAre></span>
           <div class='glass hidden'></div>
         </button>

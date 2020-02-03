@@ -187,7 +187,7 @@ hr:after {
   overflow: auto;
   margin: .5rem 0;
   max-height: 60%;
-  padding: 0 .7rem;
+  padding: 0 .3rem 0 .7rem;
   min-height: 4rem;
   width: fit-content;
   min-width: 30.6rem;
@@ -197,11 +197,11 @@ hr:after {
 }
 #taskList::-webkit-scrollbar-corner,
 #taskList::-webkit-scrollbar-track { background: #0000 }
-#taskList::-webkit-scrollbar { width: .7rem }
+#taskList::-webkit-scrollbar { width: 1.1rem }
 #taskList::-webkit-scrollbar-thumb {
-  box-shadow: 0 0 .3rem .1rem black inset;
+  box-shadow: 0 0 0 .2rem black inset;
   border: 1.3rem solid #0000;
-  border-right-width: 0;
+  border-right-width: .3rem;
   border-left-width: 0;
   border-radius: 50%;
   background: none;
