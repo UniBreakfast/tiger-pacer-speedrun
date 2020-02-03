@@ -288,7 +288,7 @@ const
   },
 
   addTask = e => {
-    if (e && e.key!='Enter') return
+    if (e.key && e.key!='Enter') return
     const name = input.value.trim(),
           day = e.shiftKey? shift(date2day()) : date2day()
     memoNot()
