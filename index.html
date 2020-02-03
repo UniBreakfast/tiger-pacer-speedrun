@@ -24,18 +24,32 @@
     </div>
     <div id=sorts>
       <button onclick=hideBar(sorts)> <img src=png/eye.png> </button>
-      сортировки:<button id=tiger onclick=changeDir() class=desc>
+      сортировки:<button id=tiger1 onclick=changeDir(this) class=desc>
         <img src=png/tiger.png>
       </button>
       <span>
         <button onclick=toggleSortSel(this)>
-          <span id=sort></span> <div class='glass hidden'></div>
+          <span id=sort1></span> <div class='glass hidden'></div>
         </button>
-        <span id=sortSel class=hidden>
-          <button id=byId onclick=selSort(byId)>по порядку</button>
-          <button id=byDone onclick=selSort(byDone)>по статусу</button>
-          <button id=byName onclick=selSort(byName)>по названию</button>
-          <button id=byDay onclick=selSort(byDay)>по дате</button>
+        <span id=sortSel1 class=hidden>
+          <button id=byDay1 onclick=selSort(byDay1)>по дате</button>
+          <button id=byDone1 onclick=selSort(byDone1)>по статусу</button>
+          <button id=byId1 onclick=selSort(byId1)>по порядку</button>
+          <button id=byName1 onclick=selSort(byName1)>по названию</button>
+        </span>
+      </span>
+      <button id=tiger2 onclick=changeDir(this) class=desc>
+        <img src=png/tiger.png>
+      </button>
+      <span>
+        <button onclick=toggleSortSel(this)>
+          <span id=sort2></span> <div class='glass hidden'></div>
+        </button>
+        <span id=sortSel2 class=hidden>
+          <button id=byDay2 onclick=selSort(byDay2)>по дате</button>
+          <button id=byDone2 onclick=selSort(byDone2)>по статусу</button>
+          <button id=byId2 onclick=selSort(byId2)>по порядку</button>
+          <button id=byName2 onclick=selSort(byName2)>по названию</button>
         </span>
       </span>
     </div>

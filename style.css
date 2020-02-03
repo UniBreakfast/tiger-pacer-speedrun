@@ -96,19 +96,14 @@ hr:after {
 #eye.striked>img:last-child { display: none }
 #eye:not(.striked)>img:first-child { display: none }
 
-#view #tiger { margin-left: 1.3rem }
-#tiger img {
-  width: 2rem;
-  height: 2rem;
-}
-#tiger.desc:hover>img { animation-duration: .3s }
+#view #tiger1, #view #tiger2 { margin-left: 1.05rem }
+#tiger1 img, #tiger2 img { width: 2rem; height: 2rem }
+#tiger1.desc:hover>img, #tiger2.desc:hover>img { animation-duration: .3s }
 .desc>img { transform: rotate(180deg) }
 
 #sorts>span { position: relative }
-#sort {
-  text-decoration: underline;
-}
-#sortSel {
+#sort1, #sort2 { text-decoration: underline }
+#sortSel1, #sortSel2 {
   top: -1rem;
   z-index: 2;
   display: flex;
@@ -170,7 +165,7 @@ hr:after {
 #daysInps>span:first-child>button:nth-child(2) { left: .5rem }
 #daysInps>span:first-child>button:nth-child(3) { right: -.1rem }
 #daysInps>span:first-child>button:last-child { left: 0 }
-
+#days>button:first-child, #dates>button:first-child { margin-right: 0 }
 #daysTotal, #datesTotal {
   cursor: help;
 }
@@ -215,7 +210,8 @@ hr:after {
 #tasks>li {
   display: flex;
   align-items: center;
-  margin: 0.4rem 0;
+  margin: 0;
+  padding: .2rem 0;
 }
 #tasks>li>button {
   position: relative;

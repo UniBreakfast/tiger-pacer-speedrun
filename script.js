@@ -72,10 +72,11 @@ const
     input.val(state.input)
     setTimeout(()=> {
       eye.classList[state.hidden[2]? 'remove':'add']('striked')
-      tiger.className = state.dir
+      tiger1.className = state.dir1,  tiger2.className = state.dir2
     }, 300)
     viewBars.map(bar => (state.hidden.includes(bar.id)? hide:show)(bar))
-    sort.in(sortSel.child('#'+state.sort).innerText)
+    sort1.in(sortSel1.child('#'+state.sort1+1).innerText)
+    sort2.in(sortSel2.child('#'+state.sort2+2).innerText)
     filterInp.val(state.filter)
     ifDone.className = state.done
     ![dates, days].map(el => el.id==state.only? show(el) : hide(el))
@@ -93,14 +94,16 @@ const
           state.dates[1]=='конца'? 0 : date2day(new Date(state.dates[1])),
       dayFn1 = earliest? task => task.day>=earliest : Boolean,
       dayFn2 = latest? task => task.day<=latest : Boolean,
-      prop = state.sort.slice(2).toLowerCase(),
-      desc = state.dir? -1 : 1,
-      sortFn =(a, b)=> a[prop]<b[prop]? 1*desc : -1*desc,
+      prop1 = state.sort1.slice(2).toLowerCase(),
+      prop2 = state.sort2.slice(2).toLowerCase(),
+      desc1 = state.dir1? -1 : 1,  desc2 = state.dir2? -1 : 1,
+      sortFn1 =(a, b)=> a[prop1]<b[prop1]? 1*desc1 : -1*desc1,
+      sortFn2 =(a, b)=> a[prop2]<b[prop2]? 1*desc2 : -1*desc2,
       shown = state.tasks.filter(condFn).filter(state.filter?
         task => task.name.toLowerCase().includes(state.filter) : Boolean)
         .filter(dayFn1).filter(dayFn2)
-    tasks.in().append(...shown.sort(sortFn).map(buildTaskEl))
-    if (state.sort=='byDay') tasks.all().map((li, i, lis)=> {
+    tasks.in().append(...shown.sort(sortFn1).sort(sortFn2).map(buildTaskEl))
+    if (state.sort2=='byDay') tasks.all().map((li, i, lis)=> {
       if (i && li.day!=lis[i-1].day) {
         const hr = crEl('hr')
         hr.dataset.day = (li.day==date2day()? 'сегодня \xa0':'') +
@@ -280,7 +283,7 @@ const
   clickAddTask = e => {
     const el = e.target,  tag = el.tagName
     if (!['DIV', 'UL', 'LI', 'HR', 'BODY'].includes(tag)) return
-    const day = state.sort=='byDay'? tag=='LI'? el.day : tag=='HR'? el.next().day :0 :0
+    const day = state.sort2=='byDay'? tag=='LI'? el.day : tag=='HR'? el.next().day :0 :0
     updState(s => (s.filter='',
       s.tasks.push(new Task('', state.done=='yes', day||undefined))))
     tasks.last(`[id="${state.id}"]>span`).focus()
@@ -368,13 +371,15 @@ const
   },
 
   toggleSortSel = el =>
-    [sortSel, el.last()].map(el => el.classList.toggle('hidden')),
+    [el.next(), el.last()].map(el => el.classList.toggle('hidden')),
 
-  selSort = el => updState(s => s.sort = el.id, sort.parent().click()),
+  selSort = el => updState(s => s['sort'+el.id.slice(-1)] = el.id.slice(0,-1),
+    el.parent().prev().click()),
 
-  changeDir =()=> {
-    tiger.classList.toggle('desc')
-    updState(s => (s.dir = s.dir? '':'desc', 1))
+  changeDir = el => {
+    el.classList.toggle('desc')
+    const i = el.id.slice(-1)
+    updState(s => (s['dir'+i] = s['dir'+i]? '':'desc', 1))
   },
 
   partFilter = el => setTimeout(updState, 0,
@@ -414,7 +419,7 @@ const
       'и завтра' : `и ${b} вперёд`}` : a==1? `${b>1&&b<'в'? 'со ':''}вчера${
       b=='все'? ' и все будущие' : b==0? ' и сегодня' : b==1?
       ', сегодня, завтра' : ` и ${b} вперёд`}` : `прошлые ${a} и ${b=='все'?
-      'все будущие' : b==0? 'сегодня' : b==1? 'до завтра' : `${b} вперёд`}`)
+      'будущие' : b==0? 'сегодня' : b==1? 'до завтра' : `${b} вперёд`}`)
   },
   updDaysTotal =()=> {
     const [a, b] = state.days
@@ -447,7 +452,7 @@ const
     if (e.target==body) tasks.child((taskList.scrollTop+taskList.clientHeight/2)
       * tasks.all().length / tasks.clientHeight |0).first().focus()
     const el = document.activeElement,  id = el.parent().id,
-          dayShift = e.shiftKey && state.sort=='byDay' && el.id=='task'
+          dayShift = e.shiftKey && state.sort2=='byDay' && el.id=='task'
     if (e.key[5]=='U') {
       if (dayShift)
         updState(s => getTask(id).day = shift(getTask(id).day, s.dir? -1 : 1)),
@@ -473,10 +478,10 @@ const
 
 
 
-let state = { v: 0, input: '', sort: 'byDay', dir: 'desc',
-              hidden: ["views", "sorts", "filters"], done:'all', filter:'',
-              only: 'days', days: ['все','все'], dates: ['начала','конца'],
-              id: 3, tasks: [
+let state = { v: 0, input: '', sort1: 'byDone', dir1: '', sort2: 'byDay',
+              dir2: '', hidden: ["views", "sorts", "filters"], done:'all',
+              filter:'', only: 'days', days: ['все','все'],
+              dates: ['начала','конца'], id: 3, tasks: [
                 {id: 1, name: "Помыть посуду", done: 0, day: date2day()},
                 {id: 2, name: "Вынести мусор", done: 0, day: date2day()},
                 {id: 3, name: "Захватить мир", done: 0, day: date2day()},
