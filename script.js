@@ -131,7 +131,7 @@ const
       tasks.child(`[id="${state.q.id}"]>span`).in(state.q.name)
     else {
       const li = tasks.child(`[id="${state.q.id}"]`)
-      if (li.prev().id==li.next().id) li.prev().remove()
+      if (li.i() && li.prev().id==li.next().id) li.prev().remove()
       li.remove()
     }
     view.v = state.v
