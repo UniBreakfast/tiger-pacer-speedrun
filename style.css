@@ -1,5 +1,3 @@
-        #sorts { margin-top: .2rem }
-
 @media (orientation: portrait) { html { font-size: 2vw } }
 
 * {
@@ -84,6 +82,7 @@ hr:after {
   display: flex;
   align-items: center;
 }
+#view>div { cursor: default; height: 2rem }
 #view, #view button, #view input, #statusBar {
   font-size: 1.3rem;
 }
@@ -96,12 +95,24 @@ hr:after {
 #eye.striked>img:last-child { display: none }
 #eye:not(.striked)>img:first-child { display: none }
 
+#views>button:not(:first-child) {
+  margin: 0 .2rem 0 .7rem;
+}
+#views>button:not([disabled]):not(.disabled) {
+  text-decoration: underline;
+}
+#views>button[disabled] { display: none }
+#views.saving>button:hover {
+  text-decoration: underline;
+  text-decoration-style: dashed;
+}
+
 #view #tiger1, #view #tiger2 { margin-left: 1.05rem }
 #tiger1 img, #tiger2 img { width: 2rem; height: 2rem }
 #tiger1.desc:hover>img, #tiger2.desc:hover>img { animation-duration: .3s }
 .desc>img { transform: rotate(180deg) }
 
-#sorts>span { position: relative }
+#sorts>span { position: relative;  width: 9rem }
 #sort1, #sort2 { text-decoration: underline }
 #sortSel1, #sortSel2 {
   top: -1rem;

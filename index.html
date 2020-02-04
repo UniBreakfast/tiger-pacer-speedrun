@@ -20,7 +20,34 @@
   <div id=view>
     <div id=views>
       <button onclick=hideBar(views)> <img src=png/eye.png> </button>
-      виды:<button id=capture onclick=saveView()>
+      виды:
+      <button id=alfa onclick=setView(this)>
+        альфа
+      </button>
+      <button id=vita onclick=setView(this)>
+        вита
+      </button>
+      <button id=gamma onclick=setView(this)>
+        гамма
+      </button>
+      <button id=iota onclick=setView(this)>
+        йота
+      </button>
+      <button id=sigma onclick=setView(this)>
+        сигма
+      </button>
+      <button id=delta onclick=setView(this)>
+        дельта
+      </button>
+      <button id=tau onclick=setView(this)>
+        тау
+      </button>
+      <button id=omega onclick=setView(this)>
+        омега
+      </button>
+
+
+      <button onclick=toSaveView(event)>
         <img src=png/shot.png>
       </button>
     </div>

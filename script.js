@@ -2,9 +2,12 @@ const
   c = console.log,  ls = localStorage,
   { parse, stringify } = JSON,  { assign } = Object,  { min, max } = Math,
   getId = obj => obj.id,
-  crEl = tag => document.createElement(tag)
+  crEl = tag => document.createElement(tag),
+  compare =(a, b)=> stringify(a)==stringify(b)
 
 Event.prototype.pd = Event.prototype.preventDefault
+EventTarget.prototype.on = EventTarget.prototype.addEventListener
+EventTarget.prototype.off = EventTarget.prototype.removeEventListener
 
 assign(HTMLElement.prototype, {
   in: function (str='') { this.innerHTML = str; return this },
@@ -76,6 +79,7 @@ const
       tiger1.className = state.dir1,  tiger2.className = state.dir2
     }, 300)
     viewBars.map(bar => (state.hidden.includes(bar.id)? hide:show)(bar))
+    presetViews()
     sort1.in(sortSel1.child('#'+state.sort1+1).innerText)
     sort2.in(sortSel2.child('#'+state.sort2+2).innerText)
     filterInp.val(state.filter)
@@ -493,14 +497,56 @@ const
 
   enterBlur = e => e.key=='Enter'? e.target.blur() :0,
 
-  daySwitch =()=> updState(s => s.only = s.only=='days'? 'dates':'days')
+  daySwitch =()=> updState(s => s.only = s.only=='days'? 'dates':'days'),
+
+  presetViews =()=> {
+    views.all('[id]').map(btn => {
+      btn.disabled = !state.views[btn.id]
+      const {sort1, dir1, sort2, dir2, done, filter, only, days, dates} = state,
+            view = {sort1, dir1, sort2, dir2, done, filter, only,
+              ...only=='days'? {days}:{dates}}
+      btn.style.border = compare(state.views[btn.id], view)?
+        '.1rem solid #3c1' : null
+      })
+    views.append(views.last('img').parent(),...views.all('[disabled]'))
+  },
+
+  setView = el => {
+    if (!el.parent('.saving')) updState(s => assign(s, s.views[el.id]))
+  },
+  toSaveView = e => {
+    views.className = 'saving'
+    e.stopPropagation()
+    body.on('click', saveView)
+    views.all('[disabled]')
+      .map(btn => (btn.disabled=0, btn.className='disabled'))
+  },
+  saveView = e => {
+    views.className = ''
+    views.all('.disabled')
+      .map(btn => (btn.disabled=1, btn.className=''))
+    const el = e.target
+    if (el.parent()==views && el.id) {
+      const {sort1, dir1, sort2, dir2, done, filter, only, days, dates} = state,
+            view = {sort1, dir1, sort2, dir2, done, filter, only,
+              ...only=='days'? {days}:{dates}}
+      if (compare(state.views[el.id], view))
+        updState(s => (delete s.views[el.id], 1))
+      else updState(s => s.views[el.id] = view)
+    }
+    body.off('click', saveView)
+  }
 
 
 
 let state = { v: 0, input: '', sort1: 'byDone', dir1: '', sort2: 'byDay',
               dir2: '', hidden: ["views", "sorts", "filters"], done:'all',
               filter:'', only: 'days', days: ['все','все'],
-              dates: ['начала','конца'], id: 3, tasks: [
+              dates: ['начала','конца'], id: 3, views: {
+                alfa: { sort1: 'byDone', dir1:'', sort2: 'byDay', dir2:'',
+                        done:'all', filter:'',only:'days', days: ['все','все']},
+                vita: { sort1:'byName',dir1:'desc', sort2:'byDone',dir2:'desc',       done:'all', filter:'',only:'days', days: [7, 3]},
+              }, tasks: [
                 {id: 1, name: "Помыть посуду", done: 0, day: date2day()},
                 {id: 2, name: "Вынести мусор", done: 0, day: date2day()},
                 {id: 3, name: "Захватить мир", done: 0, day: date2day()},
