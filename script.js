@@ -553,3 +553,5 @@ let state = { v: 0, input: '', sort1: 'byDone', dir1: '', sort2: 'byDay',
               ] }
 
 syncStore(), syncView()
+
+body.onclick = globalHK
