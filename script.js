@@ -128,15 +128,19 @@ const
   [ syncView, stopSyncView ] = makeRepeatable(syncViewOnce, SYNC_VIEW_INTER),
 
   quickSync =()=> {
-    if (state.q.input) input.val(state.q.input)
-    else if (state.q.done!=undefined)
+    if (state.q.input!=undefined) input.val(state.q.input)
+    else if (state.q.done!=undefined) {
       tasks.child(`[id="${state.q.id}"]`).className = state.q.done? 'done':''
+      updStatusBar.tasks.find(task => task.id==state.q.id).done = state.q.done
+      updStatusBar()
+    }
     else if (state.q.name)
       tasks.child(`[id="${state.q.id}"]>span`).in(state.q.name)
     else {
       const li = tasks.child(`[id="${state.q.id}"]`)
       if (li.i() && li.prev().id==li.next().id) li.prev().remove()
       li.remove()
+      updStatusBar(updStatusBar.tasks.filter(task => task.id!=li.id))
     }
     view.v = state.v
   },
@@ -368,7 +372,7 @@ const
 
   globalHK = e => {
     const el = e.target
-    if (e.key=='Enter' && el==body) setTimeout(clickAddTask,0, e)
+    if (e.key=='Enter' && el==body) setTimeout(clickAddTask, 0, e)
     else if (e.key=='Escape') el.blur()
     else if ('sыі'.includes(e.key) && e.ctrlKey) e.pd(), saveState()
     else if ('lд'.includes(e.key) && e.ctrlKey) e.pd(), stateLoader.click()
@@ -415,7 +419,8 @@ const
   end5 = n => n>5&&n<21? 'ней' : n%10==1? 'ень' : n%10>1&&n%10<5? 'ня' : 'ней',
   end6 = n => n>5&&n<21? 'ь' : n%10==1? 'я' : n%10>1&&n%10<5? 'и' : 'ь',
 
-  updStatusBar = tasks => {
+  updStatusBar =(tasks=updStatusBar.tasks)=> {
+    updStatusBar.tasks = tasks
     const total = state.tasks.length,  shown = tasks.length,
           done = tasks.filter(task => task.done).length,
           filtered = total - shown,  planned = shown - done
