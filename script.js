@@ -3,6 +3,7 @@ const
   { parse, stringify } = JSON,  { assign } = Object,  { min, max } = Math,
   getId = obj => obj.id,
   crEl = tag => document.createElement(tag),
+  clone = obj => parse(stringify(obj)),
   compare =(a, b)=> stringify(a)==stringify(b)
 
 Event.prototype.pd = Event.prototype.preventDefault
@@ -148,6 +149,7 @@ const
   updState =(queryFn, quick)=> {
     syncStoreOnce()
     if (queryFn(state)) state.q = quick||0, ++state.v
+    state.tasks = state.tasks.filter(task => task.name || task.id==state.id)
     syncView()
     syncStore()
   },
@@ -305,6 +307,7 @@ const
   },
 
   clickAddTask = e => {
+    if (Date.now()-updTask.last<500) return
     const el = e.target,  tag = el.tagName
     if (!['DIV', 'UL', 'LI', 'HR', 'BODY'].includes(tag)) return
     const day = state.sort2=='byDay'? tag=='LI'? el.day : tag=='HR'? el.next().day :0 :0
@@ -335,7 +338,7 @@ const
   updTask = el => {
     if (el.prevText) el.innerText = el.prevText
     const id = el.parent().id,  name = el.innerText.trim()
-    if (!name) delTask(el)
+    if (!name) delTask(el), updTask.last=Date.now()
     else if (name!=getTask(id).name)
       updState(()=> (getTask(id).name = name, 1), {id, name})
   },
@@ -517,7 +520,7 @@ const
   },
 
   setView = el => {
-    if (!el.parent('.saving')) updState(s => assign(s, s.views[el.id]))
+    if (!el.parent('.saving')) updState(s => assign(s, clone(s.views[el.id])))
   },
   toSaveView = e => {
     views.className = 'saving'
