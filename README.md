@@ -1,4 +1,4 @@
-# tiger-pacer-speedrun
+# [tiger-pacer-speedrun](https://github.com/UniBreakfast/tiger-pacer-speedrun)
 
 ![image](https://github.com/user-attachments/assets/b9015ab5-cefd-4e77-9fd6-68c8cd8d176f)
 
